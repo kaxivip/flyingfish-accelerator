@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>飞鱼加速器 · UI 交付文档</title>
+<style>
+  :root {
+    --bg: #090e1a;
+    --bg2: #0f1520;
+    --card: #141d2e;
+    --card2: #1a2438;
+    --border: #1e2d47;
+    --primary: #00d4ff;
+    --accent: #1aa882;
+    --warning: #f2c51c;
+    --success: #19e68c;
+    --danger: #ef4444;
+    --text: #edf2f4;
+    --text2: #7a8fa3;
+    --text3: #a0b0c0;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* Layout */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    z-index: 100;
+    padding: 20px 0 40px;
+  }
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .sidebar-logo .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .sidebar-logo .logo-text {
+    font-size: 13px; font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .nav-section { padding: 4px 12px 2px; font-size: 10px; color: var(--text2); text-transform: uppercase; letter-spacing: .08em; margin-top: 8px; }
+  .nav-item {
+    display: block; padding: 8px 20px; font-size: 13px; color: var(--text2);
+    text-decoration: none; border-radius: 0; cursor: pointer;
+    transition: color .15s, background .15s;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .nav-item:hover { color: var(--text); background: rgba(255,255,255,.04); }
+  .nav-item.active { color: var(--primary); background: rgba(0,212,255,.08); border-right: 2px solid var(--primary); }
+
+  /* Main content */
+  .main { margin-left: 240px; padding: 48px 48px 80px; max-width: 1100px; }
+
+  /* Header */
+  .doc-header {
+    background: linear-gradient(135deg, rgba(0,212,255,.08), rgba(26,168,130,.05));
+    border: 1px solid rgba(0,212,255,.2);
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  }
+  .doc-header h1 {
+    font-size: 28px; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 12px;
+  }
+  .doc-meta { display: flex; gap: 24px; flex-wrap: wrap; }
+  .doc-meta-item { font-size: 13px; color: var(--text2); }
+  .doc-meta-item a { color: var(--primary); text-decoration: none; }
+  .doc-meta-item a:hover { text-decoration: underline; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+  .badge-cyan { background: rgba(0,212,255,.15); color: var(--primary); border: 1px solid rgba(0,212,255,.3); }
+  .badge-green { background: rgba(25,230,140,.12); color: var(--success); border: 1px solid rgba(25,230,140,.25); }
+  .badge-yellow { background: rgba(242,197,28,.12); color: var(--warning); border: 1px solid rgba(242,197,28,.25); }
+  .badge-gray { background: rgba(255,255,255,.06); color: var(--text2); border: 1px solid rgba(255,255,255,.1); }
+  .badge-red { background: rgba(239,68,68,.12); color: var(--danger); border: 1px solid rgba(239,68,68,.25); }
+
+  /* Section */
+  .section { margin-bottom: 56px; scroll-margin-top: 24px; }
+  .section-title {
+    font-size: 20px; font-weight: 700; color: var(--text);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 8px; font-size: 13px; font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #05101a; flex-shrink: 0;
+  }
+  .sub-title { font-size: 16px; font-weight: 600; color: var(--text); margin: 24px 0 14px; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; border-radius: var(--radius); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--card2); }
+  th { padding: 11px 16px; text-align: left; font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+  td { padding: 11px 16px; font-size: 13px; color: var(--text3); border-top: 1px solid var(--border); }
+  tr:hover td { background: rgba(255,255,255,.02); }
+  code { background: rgba(0,212,255,.1); color: var(--primary); padding: 1px 6px; border-radius: 4px; font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace; font-size: 12px; }
+  td code { white-space: nowrap; }
+
+  /* Code block */
+  pre {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    overflow-x: auto;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  pre code { background: none; color: #a8d8e8; padding: 0; font-size: 13px; line-height: 1.6; }
+  .lang-label {
+    position: absolute; top: 10px; right: 14px;
+    font-size: 10px; font-weight: 600; color: var(--text2);
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+
+  /* Color swatch */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .color-card {
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+  .color-swatch { height: 48px; }
+  .color-info { padding: 10px 12px; }
+  .color-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .color-hex { font-size: 11px; color: var(--text2); font-family: monospace; }
+  .color-desc { font-size: 10px; color: var(--text2); margin-top: 2px; }
+
+  /* Flow chart */
+  .flow-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .flow-box pre { background: none; border: none; padding: 0; margin: 0; }
+  .flow-box pre code { color: var(--text3); font-size: 13px; }
+
+  /* Info cards */
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .info-card .ic-label { font-size: 11px; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; }
+  .info-card .ic-value { font-size: 15px; font-weight: 600; color: var(--text); }
+
+  /* State cards */
+  .state-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .state-card {
+    flex: 1; min-width: 140px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    background: var(--card);
+    text-align: center;
+  }
+  .state-dot { width: 10px; height: 10px; border-radius: 50%; margin: 0 auto 8px; }
+  .state-label { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .state-desc { font-size: 11px; color: var(--text2); }
+
+  /* Checklist */
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.05);
+    font-size: 13px; color: var(--text3);
+  }
+  .checklist li::before { content: '☐'; color: var(--text2); flex-shrink: 0; margin-top: 1px; }
+
+  /* Alert */
+  .alert {
+    border-radius: var(--radius); padding: 14px 18px; margin-bottom: 16px;
+    font-size: 13px; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .alert-cyan { background: rgba(0,212,255,.08); border: 1px solid rgba(0,212,255,.2); color: #a0e8f8; }
+  .alert-yellow { background: rgba(242,197,28,.08); border: 1px solid rgba(242,197,28,.2); color: #f5d97a; }
+
+  /* Tag list */
+  .tag-list { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .main { margin-left: 0; padding: 24px 20px 60px; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Gradient text utility */
+  .grad { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  p { color: var(--text3); line-height: 1.8; margin-bottom: 12px; }
+  ul, ol { padding-left: 20px; color: var(--text3); }
+  li { margin-bottom: 6px; }
+  strong { color: var(--text); font-weight: 600; }
+  a { color: var(--primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🐟</div>
+    <div class="logo-text">飞鱼加速器</div>
+  </div>
+  <div class="nav-section">基础规范</div>
+  <a class="nav-item" href="#s1">一、技术栈</a>
+  <a class="nav-item" href="#s2">二、色彩系统</a>
+  <a class="nav-item" href="#s3">三、圆角规范</a>
+  <a class="nav-item" href="#s4">四、间距布局</a>
+  <a class="nav-item" href="#s5">五、字体规范</a>
+  <div class="nav-section">页面结构</div>
+  <a class="nav-item" href="#s6">六、页面路由</a>
+  <a class="nav-item" href="#s7">七、页面功能详述</a>
+  <a class="nav-item" href="#s8">八、动效规范</a>
+  <div class="nav-section">开发集成</div>
+  <a class="nav-item" href="#s9">九、API 接口</a>
+  <a class="nav-item" href="#s10">十、多端适配</a>
+  <a class="nav-item" href="#s11">十一、状态机</a>
+  <a class="nav-item" href="#s12">十二、异常处理</a>
+  <a class="nav-item" href="#s13">十三、图片资源</a>
+  <a class="nav-item" href="#s14">十四、交付 Checklist</a>
+</nav>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <h1>飞鱼加速器 · UI 开发交付文档</h1>
+    <div class="doc-meta">
+      <span class="doc-meta-item">📅 更新时间：2026-06-30</span>
+      <span class="doc-meta-item">🔗 源码：<a href="https://github.com/kaxivip/flyingfish-accelerator" target="_blank">github.com/kaxivip/flyingfish-accelerator</a></span>
+    </div>
+    <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+      <span class="badge badge-cyan">Android</span>
+      <span class="badge badge-green">H5 / WebView</span>
+      <span class="badge badge-yellow">React 18 原型</span>
+      <span class="badge badge-gray">Dark Only</span>
+    </div>
+  </div>
+
+  <!-- S1 技术栈 -->
+  <section class="section" id="s1">
+    <div class="section-title"><span class="num">1</span> 技术栈与运行环境</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>项目</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>框架</td><td>React 18 + TypeScript + Vite 6</td></tr>
+          <tr><td>样式</td><td>Tailwind CSS v3 + CSS Variables</td></tr>
+          <tr><td>图标库</td><td>lucide-react</td></tr>
+          <tr><td>组件库</td><td>shadcn/ui（Card、Button 等）</td></tr>
+          <tr><td>构建产物</td><td><code>dist/</code> 目录，单页应用 SPA</td></tr>
+          <tr><td>目标平台</td><td>Android WebView / PWA / H5</td></tr>
+          <tr><td>字体</td><td>-apple-system, PingFang SC, Microsoft YaHei, sans-serif</td></tr>
+          <tr><td>设计基准</td><td>390 × 844px（iPhone 14 逻辑尺寸）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S2 色彩 -->
+  <section class="section" id="s2">
+    <div class="section-title"><span class="num">2</span> 色彩系统（Deep Ocean 暗色主题）</div>
+    <div class="alert alert-cyan">⚠️ 仅使用深色模式（Dark Only），不支持亮色切换。</div>
+
+    <div class="sub-title">主要颜色色板</div>
+    <div class="color-grid">
+      <div class="color-card"><div class="color-swatch" style="background:#090e1a"></div><div class="color-info"><div class="color-name">background</div><div class="color-hex">#090E1A · hsl(220 35% 5%)</div><div class="color-desc">全局背景</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#1e2d47"></div><div class="color-info"><div class="color-name">card</div><div class="color-hex">#1E2D47 · hsl(220 30% 17%)</div><div class="color-desc">卡片表面</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#00d4ff"></div><div class="color-info"><div class="color-name">primary</div><div class="color-hex">#00D4FF · hsl(190 100% 50%)</div><div class="color-desc">主色·青色·CTA按钮</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#1aa882"></div><div class="color-info"><div class="color-name">accent</div><div class="color-hex">#1AA882 · hsl(170 70% 35%)</div><div class="color-desc">强调色·青绿色</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#19e68c"></div><div class="color-info"><div class="color-name">status-connected</div><div class="color-hex">#19E68C · hsl(150 80% 50%)</div><div class="color-desc">已连接·成功·绿色</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#f2c51c"></div><div class="color-info"><div class="color-name">status-warning</div><div class="color-hex">#F2C51C · hsl(45 90% 55%)</div><div class="color-desc">积分·广告·金色</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#f28a1c"></div><div class="color-info"><div class="color-name">status-disconnected</div><div class="color-hex">#F28A1C · hsl(30 90% 55%)</div><div class="color-desc">断开·橙色</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#ef4444"></div><div class="color-info"><div class="color-name">destructive</div><div class="color-hex">#EF4444 · hsl(0 72% 51%)</div><div class="color-desc">危险操作·红色</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#edf2f4"></div><div class="color-info"><div class="color-name">foreground</div><div class="color-hex">#EDF2F4 · hsl(200 20% 95%)</div><div class="color-desc">主文字</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#7a8fa3"></div><div class="color-info"><div class="color-name">muted-foreground</div><div class="color-hex">#7A8FA3 · hsl(215 15% 55%)</div><div class="color-desc">次要文字</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#2a3547"></div><div class="color-info"><div class="color-name">border</div><div class="color-hex">#2A3547 · hsl(220 20% 22%)</div><div class="color-desc">分隔线·边框</div></div></div>
+      <div class="color-card"><div class="color-swatch" style="background:#121b2e"></div><div class="color-info"><div class="color-name">ocean-mid</div><div class="color-hex">#121B2E · hsl(220 30% 10%)</div><div class="color-desc">中间层·卡片底色</div></div></div>
+    </div>
+
+    <div class="sub-title">颜色使用规范</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>使用场景</th><th>Token</th><th>HEX</th></tr></thead>
+        <tbody>
+          <tr><td>主按钮 / 加速 CTA / 激活态</td><td><code>--primary</code></td><td><span class="badge badge-cyan">#00D4FF</span></td></tr>
+          <tr><td>已连接状态 / 成功提示</td><td><code>--status-connected</code></td><td><span class="badge badge-green">#19E68C</span></td></tr>
+          <tr><td>积分数字 / 广告卡片 / 金色强调</td><td><code>--status-warning</code></td><td><span class="badge badge-yellow">#F2C51C</span></td></tr>
+          <tr><td>卡片背景</td><td><code>--card</code></td><td><code>#1E2D47</code></td></tr>
+          <tr><td>全局背景</td><td><code>--background</code></td><td><code>#090E1A</code></td></tr>
+          <tr><td>主文字</td><td><code>--foreground</code></td><td><code>#EDF2F4</code></td></tr>
+          <tr><td>次要说明文字</td><td><code>--muted-foreground</code></td><td><code>#7A8FA3</code></td></tr>
+          <tr><td>分隔线 / 边框</td><td><code>--border</code></td><td><code>#2A3547</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sub-title">渐变规范</div>
+    <pre><code class="lang-css">/* 全局背景渐变 */
+background: linear-gradient(180deg, hsl(220 35% 5%) 0%, hsl(220 30% 8%) 40%, hsl(215 25% 12%) 100%);
+
+/* 主色渐变按钮（加速CTA / 观看按钮） */
+background: linear-gradient(90deg, hsl(190 100% 50%), hsl(170 70% 35%));
+
+/* 黄金渐变（广告卡片观看按钮） */
+background: linear-gradient(90deg, hsl(45 90% 55%), hsl(38 100% 55%));
+
+/* 渐变文字 - 品牌名 */
+background: linear-gradient(135deg, hsl(190 100% 55%), hsl(170 90% 50%));
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+
+/* 玻璃态卡片 */
+background: hsl(220 25% 17% / 0.9);
+backdrop-filter: blur(12px);
+border: 1px solid hsl(220 20% 25% / 0.7);</code></pre>
+  </section>
+
+  <!-- S3 圆角 -->
+  <section class="section" id="s3">
+    <div class="section-title"><span class="num">3</span> 圆角规范</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>级别</th><th>Tailwind Token</th><th>值</th><th>使用场景</th></tr></thead>
+        <tbody>
+          <tr><td>sm</td><td><code>rounded-sm</code></td><td>8px</td><td>标签、小胶囊</td></tr>
+          <tr><td>md</td><td><code>rounded-md</code></td><td>10px</td><td>输入框、小卡片</td></tr>
+          <tr><td><strong>lg（默认）</strong></td><td><code>rounded-lg</code></td><td><strong>12px</strong></td><td>标准卡片、按钮</td></tr>
+          <tr><td>xl</td><td><code>rounded-xl</code></td><td>16px</td><td>大卡片、弹窗</td></tr>
+          <tr><td>2xl</td><td><code>rounded-2xl</code></td><td>20px</td><td>底部弹窗、模态框</td></tr>
+          <tr><td>full</td><td><code>rounded-full</code></td><td>9999px</td><td>胶囊标签、圆形图标背景</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S4 间距 -->
+  <section class="section" id="s4">
+    <div class="section-title"><span class="num">4</span> 间距与布局规范</div>
+    <div class="info-grid">
+      <div class="info-card"><div class="ic-label">屏幕水平边距</div><div class="ic-value">20px（px-5）</div></div>
+      <div class="info-card"><div class="ic-label">卡片内边距</div><div class="ic-value">16px（p-4）</div></div>
+      <div class="info-card"><div class="ic-label">组件间垂直间距</div><div class="ic-value">12–16px（gap-3/4）</div></div>
+      <div class="info-card"><div class="ic-label">底部导航高度</div><div class="ic-value">约 64px（含安全区）</div></div>
+      <div class="info-card"><div class="ic-label">顶部标题栏高度</div><div class="ic-value">约 56px</div></div>
+      <div class="info-card"><div class="ic-label">设计基准宽度</div><div class="ic-value">390px（iPhone 14）</div></div>
+    </div>
+  </section>
+
+  <!-- S5 字体 -->
+  <section class="section" id="s5">
+    <div class="section-title"><span class="num">5</span> 字体规范</div>
+    <div class="alert alert-cyan">字体栈：<code>-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif</code></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>用途</th><th>大小</th><th>字重</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>品牌名（开屏）</td><td>30px / text-3xl</td><td>700 Bold</td><td>渐变色文字</td></tr>
+          <tr><td>页面大标题</td><td>18px / text-lg</td><td>700 Bold</td><td>顶栏标题</td></tr>
+          <tr><td>卡片标题</td><td>15px / text-[15px]</td><td>600 SemiBold</td><td></td></tr>
+          <tr><td>正文</td><td>14px / text-sm</td><td>400 Regular</td><td></td></tr>
+          <tr><td>次要说明</td><td>12px / text-xs</td><td>400 Regular</td><td>muted-foreground 颜色</td></tr>
+          <tr><td>微标签</td><td>10–11px</td><td>500–600</td><td>胶囊标签、角标</td></tr>
+          <tr><td>积分/时长数字</td><td>24–28px</td><td>700 Bold</td><td>等宽字体，突出展示</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S6 页面路由 -->
+  <section class="section" id="s6">
+    <div class="section-title"><span class="num">6</span> 页面结构与路由</div>
+
+    <div class="sub-title">启动流程</div>
+    <div class="flow-box">
+      <pre><code>启动页 SplashPage（展示 3 秒）
+  ├── 首次使用 ──→ 隐私确认弹窗（privacy）
+  │     ├── 「同意并继续」──→ 记录 localStorage → 主页
+  │     └── 「不同意」    ──→ 返回启动页
+  └── 已同意过  ──→ 直接进入主页（main）</code></pre>
+    </div>
+
+    <div class="sub-title">底部 Tab 导航（4个）</div>
+    <div class="flow-box">
+      <pre><code>主页（main）底部 4 个 Tab：
+  ├─ 首页（home）       → 加速功能主界面
+  ├─ 免费会员（tasks）  → 积分任务 / 广告赚积分 / 邀请奖励
+  ├─ 分享（share）      → 分享好友得积分
+  └─ 我的（profile）    → 用户中心</code></pre>
+    </div>
+
+    <div class="sub-title">独立全屏页面</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>页面</th><th>文件</th><th>入口</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>启动页</td><td><code>SplashPage.tsx</code></td><td>App 启动自动进入</td></tr>
+          <tr><td>2</td><td>隐私确认</td><td>内嵌 App.tsx</td><td>首次启动</td></tr>
+          <tr><td>3</td><td>登录</td><td><code>LoginPage.tsx</code></td><td>未登录时点击功能</td></tr>
+          <tr><td>4</td><td>模式选择</td><td><code>ModeSelectPage.tsx</code></td><td>首页模式卡片</td></tr>
+          <tr><td>5</td><td>线路选择</td><td><code>LineSelectPage.tsx</code></td><td>首页线路卡片</td></tr>
+          <tr><td>6</td><td>应用选择</td><td><code>AppSelectPage.tsx</code></td><td>应用加速模式下</td></tr>
+          <tr><td>7</td><td>积分兑换</td><td><code>PointsExchangePage.tsx</code></td><td>免费会员页</td></tr>
+          <tr><td>8</td><td>积分明细</td><td><code>PointsHistoryPage.tsx</code></td><td>免费会员页</td></tr>
+          <tr><td>9</td><td>其他福利</td><td><code>OtherBenefitsPage.tsx</code></td><td>免费会员页</td></tr>
+          <tr><td>10</td><td>任务提交</td><td><code>TaskSubmitPage.tsx</code></td><td>其他福利页</td></tr>
+          <tr><td>11</td><td>设置</td><td><code>SettingsPage.tsx</code></td><td>我的页菜单</td></tr>
+          <tr><td>12</td><td>帮助中心</td><td><code>HelpCenterPage.tsx</code></td><td>我的页菜单</td></tr>
+          <tr><td>13</td><td>关于飞鱼</td><td><code>AboutPage.tsx</code></td><td>设置页</td></tr>
+          <tr><td>14</td><td>协议页</td><td><code>AgreementPage.tsx</code></td><td>设置页 / 隐私弹窗</td></tr>
+          <tr><td>15</td><td>注销账号</td><td><code>AccountDeletePage.tsx</code></td><td>设置页</td></tr>
+          <tr><td>16</td><td>其他平台</td><td><code>OtherPlatformsPage.tsx</code></td><td>设置页</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- S7 页面详述 -->
+  <section class="section" id="s7">
+    <div class="section-title"><span class="num">7</span> 各页面功能详述</div>
+
+    <div class="sub-title">7.1 首页（加速页）</div>
+    <p>顶部栏 → 状态徽章 → 火箭动画 → 加速按钮 → 模式/线路卡片（双列）→ 广告位预留</p>
+    <div class="state-row">
+      <div class="state-card">
+        <div class="state-dot" style="background:#7a8fa3;box-shadow:0 0 8px #7a8fa3aa"></div>
+        <div class="state-label">未连接</div>
+        <div class="state-desc">按钮文案「立即提速」<br>蓝→青渐变</div>
+      </div>
+      <div class="state-card">
+        <div class="state-dot" style="background:#00d4ff;box-shadow:0 0 8px #00d4ffaa;animation:pulse 1s infinite"></div>
+        <div class="state-label">连接中</div>
+        <div class="state-desc">旋转光环<br>脉冲动效</div>
+      </div>
+      <div class="state-card">
+        <div class="state-dot" style="background:#19e68c;box-shadow:0 0 8px #19e68caa"></div>
+        <div class="state-label">已连接</div>
+        <div class="state-desc">绿色光晕脉冲<br>Pause 图标「停止」</div>
+      </div>
+    </div>
+
+    <div class="sub-title">7.2 免费会员页（积分任务）</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>模块</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>看广告赚积分</td><td>黄金色卡片，每日最多8次，每次 +50 积分，进度圆点显示</td></tr>
+        <tr><td>领取邀请奖励</td><td>输入邀请码领取 100 积分（被邀请人操作）</td></tr>
+        <tr><td>分享好友得积分</td><td>邀好友 1:1 得积分，跳转分享页</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub-title">7.3 积分兑换</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>商品</th><th>时长</th><th>积分</th><th>标签</th></tr></thead>
+      <tbody>
+        <tr><td>30 分钟会员</td><td>30 min</td><td>30</td><td>-</td></tr>
+        <tr><td>1 小时会员</td><td>60 min</td><td>60</td><td><span class="badge badge-cyan">热门</span></td></tr>
+        <tr><td>24 小时会员</td><td>1440 min</td><td>1200</td><td>-</td></tr>
+        <tr><td>7 天会员</td><td>10080 min</td><td>7200</td><td>-</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub-title">7.4 线路选择</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>线路</th><th>地区</th><th>延迟</th><th>标签</th></tr></thead>
+      <tbody>
+        <tr><td>智能优选（默认）</td><td>自动匹配最优</td><td>&lt;50ms</td><td><span class="badge badge-cyan">推荐</span></td></tr>
+        <tr><td>日本·东京</td><td>亚洲·低延迟</td><td>~80ms</td><td><span class="badge badge-yellow">热门</span></td></tr>
+        <tr><td>香港·九龙</td><td>亚洲·极速</td><td>~30ms</td><td>-</td></tr>
+        <tr><td>韩国·首尔</td><td>亚洲·稳定</td><td>~60ms</td><td>-</td></tr>
+        <tr><td>美国·洛杉矶</td><td>北美·大带宽</td><td>~180ms</td><td>-</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub-title">7.5 设置页菜单结构</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>分组</th><th>菜单项</th><th>类型</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="2">通知与存储</td><td>消息通知</td><td>Toggle 开关</td></tr>
+        <tr><td>清除缓存</td><td>弹窗确认</td></tr>
+        <tr><td rowspan="2">法律与协议</td><td>隐私协议</td><td>跳转</td></tr>
+        <tr><td>服务协议</td><td>跳转</td></tr>
+        <tr><td rowspan="3">关于</td><td>新版本检测</td><td>操作（含升级流程）</td></tr>
+        <tr><td>其他平台客户端</td><td>跳转</td></tr>
+        <tr><td>关于飞鱼</td><td>跳转</td></tr>
+        <tr><td rowspan="2">账号（登录后可见）</td><td>注销账号</td><td>跳转确认页</td></tr>
+        <tr><td>退出登录</td><td>清除状态</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- S8 动效 -->
+  <section class="section" id="s8">
+    <div class="section-title"><span class="num">8</span> 动效规范</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>动效名称</th><th>时长</th><th>缓动</th><th>触发场景</th></tr></thead>
+      <tbody>
+        <tr><td>页面滑入</td><td>300ms</td><td>ease-out</td><td>全屏页面进入（从右滑入）</td></tr>
+        <tr><td>弹窗淡入</td><td>500ms</td><td>ease-out</td><td>弹窗出现（透明度 + 上移）</td></tr>
+        <tr><td>火箭发射</td><td>700ms</td><td>ease-out</td><td>加速连接成功</td></tr>
+        <tr><td>火焰闪烁</td><td>350ms</td><td>ease-in-out</td><td>已连接状态持续</td></tr>
+        <tr><td>脉冲辉光</td><td>2000ms</td><td>ease-in-out</td><td>按钮/图标呼吸效果</td></tr>
+        <tr><td>按钮点击</td><td>即时</td><td>-</td><td>scale 0.96 压缩反馈</td></tr>
+        <tr><td>进度条</td><td>300ms</td><td>-</td><td>升级下载进度</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- S9 API -->
+  <section class="section" id="s9">
+    <div class="section-title"><span class="num">9</span> API 接口清单</div>
+
+    <div class="sub-title">通用请求头</div>
+    <pre><code>Authorization: Bearer &lt;token&gt;
+Content-Type: application/json
+X-Platform: h5 | android | ios
+X-App-Version: 1.0.0</code></pre>
+
+    <div class="sub-title">通用响应格式</div>
+    <pre><code>{
+  "code": 0,           // 0=成功，非0=错误码
+  "message": "success",
+  "data": { ... }
+}</code></pre>
+
+    <div class="sub-title">错误码</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>code</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>成功</td></tr>
+        <tr><td>401</td><td>Token 过期 / 未登录</td></tr>
+        <tr><td>403</td><td>权限不足</td></tr>
+        <tr><td>1001</td><td>积分不足</td></tr>
+        <tr><td>1002</td><td>会员兑换失败</td></tr>
+        <tr><td>2001</td><td>任务不存在</td></tr>
+        <tr><td>2002</td><td>任务已完成</td></tr>
+        <tr><td>3001</td><td>已是最新版本</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub-title">接口列表</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>模块</th><th>接口</th><th>方法</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="4">用户</td><td><code>/api/user/login</code></td><td>POST</td><td>登录，返回 token</td></tr>
+        <tr><td><code>/api/user/logout</code></td><td>POST</td><td>退出登录</td></tr>
+        <tr><td><code>/api/user/info</code></td><td>GET</td><td>获取用户信息</td></tr>
+        <tr><td><code>/api/user/delete</code></td><td>DELETE</td><td>注销账号</td></tr>
+        <tr><td rowspan="4">加速</td><td><code>/api/accel/nodes</code></td><td>GET</td><td>获取节点列表</td></tr>
+        <tr><td><code>/api/accel/connect</code></td><td>POST</td><td>开始加速</td></tr>
+        <tr><td><code>/api/accel/disconnect</code></td><td>POST</td><td>停止加速</td></tr>
+        <tr><td><code>/api/accel/status</code></td><td>GET</td><td>查询连接状态</td></tr>
+        <tr><td rowspan="4">积分</td><td><code>/api/points/balance</code></td><td>GET</td><td>积分余额</td></tr>
+        <tr><td><code>/api/points/history</code></td><td>GET</td><td>积分流水</td></tr>
+        <tr><td><code>/api/points/checkin</code></td><td>POST</td><td>每日签到</td></tr>
+        <tr><td><code>/api/points/earn</code></td><td>POST</td><td>通用积分获取</td></tr>
+        <tr><td rowspan="2">会员</td><td><code>/api/member/status</code></td><td>GET</td><td>会员状态与时长</td></tr>
+        <tr><td><code>/api/member/exchange</code></td><td>POST</td><td>积分兑换会员</td></tr>
+        <tr><td rowspan="3">任务</td><td><code>/api/tasks/list</code></td><td>GET</td><td>任务列表</td></tr>
+        <tr><td><code>/api/tasks/submit</code></td><td>POST</td><td>上传凭证（multipart）</td></tr>
+        <tr><td><code>/api/tasks/claim</code></td><td>POST</td><td>领取奖励</td></tr>
+        <tr><td rowspan="2">分享</td><td><code>/api/invite/code</code></td><td>GET</td><td>获取邀请码</td></tr>
+        <tr><td><code>/api/invite/records</code></td><td>GET</td><td>邀请记录</td></tr>
+        <tr><td rowspan="2">版本</td><td><code>/api/version/check</code></td><td>GET</td><td>检测新版本</td></tr>
+        <tr><td><code>/api/version/download</code></td><td>GET</td><td>获取升级包</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub-title">Android WebView JS Bridge（预留接口）</div>
+    <pre><code>window.FeiyuBridge = {
+  getUserToken:   () => String,          // 获取登录 token
+  showRewardedAd: (callback) => void,    // 展示激励广告，完成后回调
+  shareToApp:     (url, text) => void,   // 调用系统分享
+  getDeviceId:    () => String,          // 获取设备 ID
+  openAppStore:   () => void,            // 打开应用市场
+  vibrate:        (ms) => void,          // 触觉反馈
+}</code></pre>
+  </section>
+
+  <!-- S10 多端 -->
+  <section class="section" id="s10">
+    <div class="section-title"><span class="num">10</span> 多端适配要求</div>
+
+    <div class="sub-title">Android WebView 配置</div>
+    <pre><code>WebSettings settings = webView.getSettings();
+settings.setJavaScriptEnabled(true);
+settings.setDomStorageEnabled(true);        // localStorage 需要
+settings.setDatabaseEnabled(true);
+settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+settings.setMediaPlaybackRequiresUserGesture(false);  // 激励广告自动播放
+settings.setCacheMode(WebSettings.LOAD_DEFAULT);</code></pre>
+
+    <div class="sub-title">多端要求对比</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>项目</th><th>H5</th><th>Android</th><th>iOS</th></tr></thead>
+      <tbody>
+        <tr><td>最低版本</td><td>Chrome 80+</td><td>Android 7.0 (API 24)</td><td>iOS 15.0</td></tr>
+        <tr><td>VPN 实现</td><td>-</td><td>VpnService API</td><td>NEPacketTunnelProvider</td></tr>
+        <tr><td>广告 SDK</td><td>WebView 内嵌</td><td>AdMob / 穿山甲</td><td>AdMob iOS SDK</td></tr>
+        <tr><td>分享</td><td>Web Share API</td><td>系统分享 Intent</td><td>UIActivityViewController</td></tr>
+        <tr><td>升级</td><td>-</td><td>APK 下载安装</td><td>跳转 App Store</td></tr>
+        <tr><td>通知</td><td>-</td><td>前台服务常驻通知</td><td>APNs</td></tr>
+        <tr><td>LocalStorage</td><td>✅</td><td>需开启 DomStorage</td><td>✅</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub-title">LocalStorage 关键字段</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Key</th><th>Value</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td><code>privacy_agreed</code></td><td><code>"1"</code></td><td>用户已同意隐私协议，首次启动判断</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub-title">屏幕适配</div>
+    <ul>
+      <li>设计基准宽度：<strong>390px</strong>（iPhone 14 逻辑宽度）</li>
+      <li>Viewport：<code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code></li>
+      <li>已使用 Tailwind 相对单位，自适应 320px ~ 430px 宽度</li>
+    </ul>
+  </section>
+
+  <!-- S11 状态机 -->
+  <section class="section" id="s11">
+    <div class="section-title"><span class="num">11</span> 状态机汇总</div>
+    <div class="flow-box">
+      <pre><code>【加速状态】
+未连接 ──[点击立即提速]──→ 连接中 ──[成功]──→ 已连接
+已连接 ──[点击停止]──→ 未连接
+连接中 ──[失败]──→ 未连接（Toast 提示）
+
+【登录状态】
+未登录 ──[登录成功]──→ 已登录
+已登录 ──[退出/Token过期]──→ 未登录
+已登录 ──[注销账号]──→ 未登录（数据清除）
+
+【会员状态】
+无会员 ──[积分兑换]──→ 会员生效中
+会员生效中 ──[时长耗尽]──→ 无会员
+会员生效中 ──[再次兑换]──→ 会员生效中（时长叠加）
+
+【任务状态】
+待完成 ──[上传凭证]──→ 审核中
+审核中 ──[审核通过]──→ 已完成（可领取奖励）
+审核中 ──[未通过]──→ 待完成（显示未通过原因）
+已完成 ──[手动领取]──→ 已领取</code></pre>
+    </div>
+  </section>
+
+  <!-- S12 异常处理 -->
+  <section class="section" id="s12">
+    <div class="section-title"><span class="num">12</span> 异常处理清单</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>场景</th><th>UI 反馈</th></tr></thead>
+      <tbody>
+        <tr><td>网络断开</td><td>Toast「网络连接已断开」</td></tr>
+        <tr><td>加速连接失败</td><td>Toast「连接失败，请重试」+ 回到未连接状态</td></tr>
+        <tr><td>Token 过期</td><td>弹窗「登录已过期」→ 跳转登录页</td></tr>
+        <tr><td>积分不足</td><td>兑换按钮显示「积分不足」，不可点击</td></tr>
+        <tr><td>服务器错误</td><td>Toast「服务异常，请稍后再试」</td></tr>
+        <tr><td>广告加载失败</td><td>广告位显示「暂无广告」占位</td></tr>
+        <tr><td>版本检测失败</td><td>Toast「检测失败，请稍后重试」</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- S13 图片 -->
+  <section class="section" id="s13">
+    <div class="section-title"><span class="num">13</span> 图片资源</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>资源</th><th>路径</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>App 图标</td><td><code>public/images/logo.png</code></td><td>启动页、隐私弹窗、导航标题</td></tr>
+        <tr><td>备用图标</td><td><code>public/images/logo_v2.png</code></td><td>备选版本</td></tr>
+        <tr><td>火箭图</td><td><code>public/images/rocket-hd.png</code></td><td>首页加速火箭动画</td></tr>
+        <tr><td>PWA 配置</td><td><code>public/manifest.json</code></td><td>PWA 安装 / 图标配置</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub-title">应用图标列表（应用加速模式）</div>
+    <div class="tag-list">
+      <span class="badge badge-gray">YouTube</span><span class="badge badge-gray">X (Twitter)</span>
+      <span class="badge badge-gray">Instagram</span><span class="badge badge-gray">Telegram</span>
+      <span class="badge badge-gray">WhatsApp</span><span class="badge badge-gray">TikTok</span>
+      <span class="badge badge-gray">Discord</span><span class="badge badge-gray">Spotify</span>
+      <span class="badge badge-gray">Netflix</span><span class="badge badge-gray">ChatGPT</span>
+      <span class="badge badge-gray">GitHub</span><span class="badge badge-gray">Reddit</span>
+      <span class="badge badge-gray">Medium</span><span class="badge badge-gray">Notion</span>
+      <span class="badge badge-gray">Figma</span><span class="badge badge-gray">Google</span>
+    </div>
+  </section>
+
+  <!-- S14 Checklist -->
+  <section class="section" id="s14">
+    <div class="section-title"><span class="num">14</span> 交付 Checklist</div>
+    <ul class="checklist">
+      <li>全部页面截图（正常态 + 各状态）</li>
+      <li>设计标注稿（Figma / 蓝湖）</li>
+      <li>图标切图导出（SVG + @2x / @3x PNG）</li>
+      <li>色板文件（ASE / Swatches）</li>
+      <li>页面流转图（见本文档第六章）</li>
+      <li>动效 Demo 视频（GIF / MP4）</li>
+      <li>API 接口文档（Swagger / Apifox）</li>
+      <li>业务逻辑文档（见本文档第七章）</li>
+      <li>多端权限清单</li>
+      <li>埋点需求文档</li>
+      <li>测试用例文档</li>
+    </ul>
+
+    <div style="margin-top:32px; padding:20px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); font-size:13px; color:var(--text2);">
+      📧 客服邮箱：<a href="mailto:support@feiyu.info">support@feiyu.info</a>　
+      🔗 UI 源码：<a href="https://github.com/kaxivip/flyingfish-accelerator" target="_blank">github.com/kaxivip/flyingfish-accelerator</a>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('.section');
+  const navItems = document.querySelectorAll('.nav-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const a = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '-50px 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

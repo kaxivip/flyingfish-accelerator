@@ -1,0 +1,248 @@
+{
+  "project": "飞鱼加速器 (FlyingFish Accelerator)",
+  "version": "1.0.0",
+  "description": "Design tokens for H5/Android native development",
+  "colors": {
+    "background": {
+      "value": "hsl(220, 35%, 5%)",
+      "hex": "#080B11",
+      "usage": "页面主背景色"
+    },
+    "foreground": {
+      "value": "hsl(200, 20%, 95%)",
+      "hex": "#EEF3F5",
+      "usage": "主文本颜色"
+    },
+    "primary": {
+      "value": "hsl(190, 100%, 50%)",
+      "hex": "#00D4FF",
+      "usage": "品牌主色/按钮/链接/高亮"
+    },
+    "primaryForeground": {
+      "value": "hsl(220, 35%, 5%)",
+      "hex": "#080B11",
+      "usage": "primary色上的文字/图标"
+    },
+    "accent": {
+      "value": "hsl(170, 70%, 35%)",
+      "hex": "#1A9E8F",
+      "usage": "辅助色/渐变终点"
+    },
+    "secondary": {
+      "value": "hsl(240, 50%, 20%)",
+      "hex": "#19194D",
+      "usage": "次级色/菜单图标背景"
+    },
+    "card": {
+      "value": "hsl(220, 30%, 17%)",
+      "hex": "#1E2533",
+      "usage": "卡片背景色"
+    },
+    "cardForeground": {
+      "value": "hsl(200, 20%, 92%)",
+      "hex": "#E6ECED",
+      "usage": "卡片内文字"
+    },
+    "muted": {
+      "value": "hsl(220, 20%, 18%)",
+      "hex": "#252B36",
+      "usage": "次级背景/图标背景"
+    },
+    "mutedForeground": {
+      "value": "hsl(215, 15%, 55%)",
+      "hex": "#7E8A9C",
+      "usage": "次级文字/辅助说明"
+    },
+    "border": {
+      "value": "hsl(220, 20%, 22%)",
+      "hex": "#2D3544",
+      "usage": "边框/分隔线"
+    },
+    "statusConnected": {
+      "value": "hsl(150, 80%, 50%)",
+      "hex": "#19E68C",
+      "usage": "已连接/加速中状态"
+    },
+    "statusDisconnected": {
+      "value": "hsl(30, 90%, 55%)",
+      "hex": "#F08C28",
+      "usage": "未连接状态"
+    },
+    "statusWarning": {
+      "value": "hsl(45, 90%, 55%)",
+      "hex": "#F0C428",
+      "usage": "警告/积分/金币色"
+    },
+    "oceanDeep": {
+      "value": "hsl(220, 40%, 4%)",
+      "hex": "#060910",
+      "usage": "深海背景"
+    },
+    "oceanMid": {
+      "value": "hsl(220, 30%, 10%)",
+      "hex": "#111622",
+      "usage": "中层背景"
+    },
+    "oceanSurface": {
+      "value": "hsl(195, 90%, 45%)",
+      "hex": "#0BD1E6",
+      "usage": "浅海/渐变起点"
+    },
+    "oceanGlow": {
+      "value": "hsl(185, 100%, 55%)",
+      "hex": "#33E8FF",
+      "usage": "发光效果"
+    }
+  },
+  "gradients": {
+    "bgOceanGradient": {
+      "value": "linear-gradient(180deg, hsl(220 35% 5%) 0%, hsl(220 30% 8%) 40%, hsl(215 25% 12%) 100%)",
+      "usage": "页面主背景渐变"
+    },
+    "bgOceanRadial": {
+      "value": "radial-gradient(ellipse at 50% 0%, hsl(220 25% 12%) 0%, hsl(220 35% 5%) 70%)",
+      "usage": "顶部径向光晕"
+    },
+    "buttonDefault": {
+      "value": "linear-gradient(to right, #3B82F6, #06B6D4)",
+      "hex": "from-blue-500 to-cyan-500",
+      "usage": "加速按钮默认态"
+    },
+    "buttonConnected": {
+      "value": "linear-gradient(to right, #10B981, #14B8A6)",
+      "hex": "from-emerald-500 to-teal-500",
+      "usage": "加速按钮已连接态"
+    },
+    "buttonConnecting": {
+      "value": "linear-gradient(to right, #0891B2, #1D4ED8)",
+      "hex": "from-cyan-600 to-blue-700",
+      "usage": "加速按钮连接中态"
+    },
+    "loginButton": {
+      "value": "linear-gradient(to right, hsl(195 90% 45%), hsl(170 70% 35%))",
+      "usage": "登录按钮渐变"
+    },
+    "textGradientCyan": {
+      "value": "linear-gradient(135deg, hsl(190 100% 55%), hsl(170 90% 50%))",
+      "usage": "标题渐变文字"
+    }
+  },
+  "typography": {
+    "fontFamily": "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif",
+    "pageHeading": {
+      "fontSize": "20px",
+      "fontWeight": "700",
+      "color": "foreground"
+    },
+    "brandTitle": {
+      "fontSize": "16px",
+      "fontWeight": "700",
+      "color": "textGradientCyan"
+    },
+    "accelerateButton": {
+      "fontSize": "18px",
+      "fontWeight": "400",
+      "color": "#FFFFFF"
+    },
+    "cardBigNumber": {
+      "fontSize": "24px",
+      "fontWeight": "700",
+      "color": "foreground"
+    },
+    "cardLabel": {
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "color": "mutedForeground"
+    },
+    "cardAction": {
+      "fontSize": "10px",
+      "fontWeight": "400",
+      "color": "primary"
+    },
+    "menuItemLabel": {
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "color": "foreground"
+    },
+    "navLabel": {
+      "fontSize": "10px",
+      "fontWeight": "500",
+      "color": "primary(激活) / mutedForeground(默认)"
+    },
+    "statusBadge": {
+      "fontSize": "14px",
+      "fontWeight": "500",
+      "color": "primary / statusConnected"
+    },
+    "superscriptDate": {
+      "fontSize": "9px",
+      "fontWeight": "400",
+      "color": "mutedForeground"
+    }
+  },
+  "spacing": {
+    "pagePadding": "20px",
+    "statusBarHeight": "48px",
+    "cardPadding": "16px",
+    "menuItemPadding": "16px",
+    "bottomNavPaddingBottom": "24px",
+    "sectionGap": "16px",
+    "buttonMarginBottom": "16px"
+  },
+  "sizing": {
+    "accelerateButton": {
+      "width": "85% (max 360px)",
+      "height": "55px",
+      "borderRadius": "16px"
+    },
+    "loginButton": {
+      "width": "100%",
+      "height": "55px",
+      "borderRadius": "12px"
+    },
+    "rocketArea": {
+      "width": "280px",
+      "height": "245px"
+    },
+    "iconBox": {
+      "small": "24px",
+      "medium": "32px",
+      "large": "44px"
+    },
+    "navIcon": "20px",
+    "avatarSize": "56px",
+    "cardBorderRadius": "12px",
+    "bottomNavHeight": "auto (padding-top: 8px, padding-bottom: 24px)"
+  },
+  "effects": {
+    "glassCard": {
+      "background": "hsla(220, 25%, 17%, 0.9)",
+      "backdropFilter": "blur(12px)",
+      "border": "1px solid hsla(220, 20%, 25%, 0.7)"
+    },
+    "glowPrimary": {
+      "boxShadow": "0 0 20px hsla(190, 100%, 50%, 0.2), 0 0 60px hsla(190, 100%, 50%, 0.08)"
+    },
+    "glowConnected": {
+      "boxShadow": "0 0 20px hsla(150, 80%, 50%, 0.25), 0 0 60px hsla(150, 80%, 50%, 0.1)"
+    },
+    "buttonShadowDefault": {
+      "boxShadow": "0 4px 30px hsla(200, 80%, 50%, 0.3)"
+    },
+    "buttonShadowConnected": {
+      "boxShadow": "0 4px 30px hsla(150, 80%, 50%, 0.3)"
+    }
+  },
+  "divider": {
+    "menuDivider": {
+      "marginLeft": "62px",
+      "marginRight": "16px",
+      "borderBottom": "1px solid hsla(0, 0%, 100%, 0.08)",
+      "usage": "菜单项分隔线（Android风格，从图标右侧开始）"
+    },
+    "cardVerticalDivider": {
+      "borderRight": "1px solid hsla(220, 20%, 22%, 0.7)",
+      "usage": "积分卡片中间竖线分隔"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "飞鱼加速器",
+  "short_name": "飞鱼",
+  "description": "一触即飞，畅游全球。免费海外网络加速服务。",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1628",
+  "theme_color": "#00c8ff",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

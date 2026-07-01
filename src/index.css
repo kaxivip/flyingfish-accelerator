@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* === Flying Fish Accelerator - Deep Ocean Theme === */
+
+    /* Core palette */
+    --background: 220 35% 5%;
+    --foreground: 200 20% 95%;
+
+    /* Card surfaces */
+    --card: 220 30% 17%;
+    --card-foreground: 200 20% 92%;
+
+    /* Popover */
+    --popover: 220 30% 8%;
+    --popover-foreground: 200 20% 92%;
+
+    /* Primary - Bright Cyan (ocean surface) */
+    --primary: 190 100% 50%;
+    --primary-foreground: 220 35% 5%;
+
+    /* Secondary - Purple-blue */
+    --secondary: 240 50% 20%;
+    --secondary-foreground: 200 20% 90%;
+
+    /* Muted */
+    --muted: 220 20% 18%;
+    --muted-foreground: 215 15% 55%;
+
+    /* Accent - Teal */
+    --accent: 170 70% 35%;
+    --accent-foreground: 200 20% 95%;
+
+    /* Destructive */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders & inputs */
+    --border: 220 20% 22%;
+    --input: 220 20% 22%;
+    --ring: 190 100% 50%;
+
+    /* Border radius */
+    --radius: 0.75rem;
+
+    /* === Custom: Ocean Depth Tokens === */
+    --ocean-deep: 220 40% 4%;
+    --ocean-mid: 220 30% 10%;
+    --ocean-surface: 195 90% 45%;
+    --ocean-glow: 185 100% 55%;
+
+    /* === Custom: Status Tokens === */
+    --status-connected: 150 80% 50%;
+    --status-disconnected: 30 90% 55%;
+    --status-warning: 45 90% 55%;
+  }
+
+  /* Light mode not used for this app, but provided for completeness */
+  .light {
+    --background: 200 20% 98%;
+    --foreground: 220 35% 5%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 35% 5%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 35% 5%;
+    --primary: 195 90% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 30% 94%;
+    --secondary-foreground: 220 35% 5%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 15% 45%;
+    --accent: 170 60% 40%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 195 90% 45%;
+    --ocean-deep: 200 30% 92%;
+    --ocean-mid: 200 20% 88%;
+    --ocean-surface: 195 90% 45%;
+    --ocean-glow: 185 100% 55%;
+    --status-connected: 150 70% 42%;
+    --status-disconnected: 25 85% 50%;
+    --status-warning: 40 85% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif;
+  }
+}
+
+@layer components {
+  /* Ocean gradient backgrounds */
+  .bg-ocean-gradient {
+    background: linear-gradient(180deg, hsl(220 35% 5%) 0%, hsl(220 30% 8%) 40%, hsl(215 25% 12%) 100%);
+  }
+
+  .bg-ocean-radial {
+    background: radial-gradient(ellipse at 50% 0%, hsl(220 25% 12%) 0%, hsl(220 35% 5%) 70%);
+  }
+
+  .bg-ocean-deep-gradient {
+    background: linear-gradient(180deg, hsl(220 40% 4%) 0%, hsl(220 35% 6%) 50%, hsl(220 30% 10%) 100%);
+  }
+
+  /* Glow effects */
+  .glow-primary {
+    box-shadow: 0 0 20px hsl(190 100% 50% / 0.2), 0 0 60px hsl(190 100% 50% / 0.08);
+  }
+
+  .glow-connected {
+    box-shadow: 0 0 20px hsl(150 80% 50% / 0.25), 0 0 60px hsl(150 80% 50% / 0.1);
+  }
+
+  /* Glass card effect */
+  .glass-card {
+    background: hsl(220 25% 17% / 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(220 20% 25% / 0.7);
+  }
+
+  /* Gradient text */
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, hsl(190 100% 55%), hsl(170 90% 50%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-premium {
+    background: linear-gradient(135deg, hsl(190 100% 55%), hsl(260 70% 65%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Animated background particles */
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: hsl(190 100% 60% / 0.4);
+    border-radius: 50%;
+    animation: float-up 3s ease-out infinite;
+  }
+
+  /* Connect button styles */
+  .connect-ring {
+    background: conic-gradient(
+      from 0deg,
+      hsl(190 100% 50%),
+      hsl(170 90% 50%),
+      hsl(190 100% 50%)
+    );
+  }
+
+  .connect-ring-connected {
+    background: conic-gradient(
+      from 0deg,
+      hsl(150 80% 50%),
+      hsl(170 90% 50%),
+      hsl(150 80% 50%)
+    );
+  }
+
+  /* Shimmer effect for loading states */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(220 25% 10%) 0%,
+      hsl(220 20% 16%) 50%,
+      hsl(220 25% 10%) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Rocket launch animation */
+  @keyframes rocket-launch {
+    0% { transform: translateY(0); }
+    20% { transform: translateY(-10px); }
+    50% { transform: translateY(-6px); }
+    80% { transform: translateY(-8px); }
+    100% { transform: translateY(-7px); }
+  }
+
+  .animate-rocket-launch {
+    animation: rocket-launch 0.7s ease-out forwards;
+  }
+
+  /* Flame flicker animation */
+  @keyframes flame-flicker {
+    0%, 100% { opacity: 0.85; transform: scaleY(1) scaleX(1); }
+    20% { opacity: 1; transform: scaleY(1.15) scaleX(0.88); }
+    40% { opacity: 0.75; transform: scaleY(0.92) scaleX(1.08); }
+    60% { opacity: 0.95; transform: scaleY(1.08) scaleX(0.92); }
+    80% { opacity: 0.8; transform: scaleY(0.95) scaleX(1.05); }
+  }
+
+  .animate-flame-flicker {
+    animation: flame-flicker 0.35s ease-in-out infinite;
+    transform-origin: 114px 196px;
+  }
+
+  /* Speed lines animation */
+  @keyframes speed-lines {
+    0%, 100% { opacity: 0.15; transform: translateY(0); }
+    50% { opacity: 0.4; transform: translateY(4px); }
+  }
+
+  .animate-speed-lines {
+    animation: speed-lines 1.2s ease-in-out infinite;
+  }
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(220 35% 5%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(220 20% 20%);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(220 20% 30%);
+}

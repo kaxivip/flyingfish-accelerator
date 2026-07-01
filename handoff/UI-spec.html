@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>飞鱼加速器 - UI开发规格说明</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #0a0e17; color: #eef3f5; line-height: 1.6; padding: 24px; max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 28px; color: #00d4ff; margin-bottom: 8px; }
+  h2 { font-size: 20px; color: #00d4ff; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #2d3544; }
+  h3 { font-size: 16px; color: #33e8ff; margin: 20px 0 10px; }
+  .subtitle { color: #7e8a9c; font-size: 14px; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+  th { background: #1e2533; color: #00d4ff; text-align: left; padding: 8px 12px; font-weight: 600; }
+  td { padding: 8px 12px; border-bottom: 1px solid #2d3544; }
+  .swatch { display: inline-block; width: 20px; height: 20px; border-radius: 4px; vertical-align: middle; margin-right: 8px; border: 1px solid #2d3544; }
+  code { background: #1e2533; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #33e8ff; }
+  .section { margin-bottom: 28px; }
+  .note { background: #1e2533; border-left: 3px solid #00d4ff; padding: 12px 16px; margin: 12px 0; font-size: 13px; border-radius: 0 8px 8px 0; }
+  .warn { border-left-color: #f0c428; }
+  .flow { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .flow-item { background: #1e2533; border: 1px solid #2d3544; padding: 6px 12px; border-radius: 8px; font-size: 12px; }
+  .flow-item.active { border-color: #00d4ff; color: #00d4ff; }
+  .flow-arrow { color: #7e8a9c; align-self: center; }
+  ul { padding-left: 20px; margin: 8px 0; }
+  li { margin: 4px 0; font-size: 13px; }
+  .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 12px 0; }
+  .spec-card { background: #1e2533; border-radius: 8px; padding: 16px; }
+  .spec-card h4 { color: #33e8ff; font-size: 14px; margin-bottom: 8px; }
+  .dim { color: #7e8a9c; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>飞鱼加速器 - UI开发规格说明</h1>
+<p class="subtitle">面向 H5 / Android 原生开发人员 | 版本 1.0 | 2026-06-26</p>
+<p class="subtitle">线上预览：<a href="https://flyingfish-accelerator.vercel.app" style="color:#00d4ff">https://flyingfish-accelerator.vercel.app</a></p>
+
+<h2>1. 项目概述</h2>
+<div class="section">
+  <p>飞鱼加速器是一款面向用户的网络加速工具，核心功能：一键加速、模式/线路选择、积分体系、免费会员兑换。</p>
+  <ul>
+    <li><strong>设计尺寸</strong>：375 x 812 (iPhone X 基准，适配 Android)</li>
+    <li><strong>主题</strong>：深色模式 (Deep Ocean)，无浅色模式</li>
+    <li><strong>字体</strong>：-apple-system, BlinkMacSystemFont, PingFang SC, Helvetica Neue, Microsoft YaHei, sans-serif</li>
+    <li><strong>圆角基准</strong>：12px (卡片/按钮)</li>
+    <li><strong>状态栏</strong>：预留 48px 高度</li>
+  </ul>
+</div>
+
+<h2>2. 色板 (Design Tokens)</h2>
+<div class="section">
+  <h3>2.1 核心色</h3>
+  <table>
+    <tr><th>名称</th><th>HEX</th><th>HSL</th><th>用途</th></tr>
+    <tr><td><span class="swatch" style="background:#080B11"></span>Background</td><td>#080B11</td><td>220 35% 5%</td><td>页面背景</td></tr>
+    <tr><td><span class="swatch" style="background:#EEF3F5"></span>Foreground</td><td>#EEF3F5</td><td>200 20% 95%</td><td>主文本</td></tr>
+    <tr><td><span class="swatch" style="background:#00D4FF"></span>Primary</td><td>#00D4FF</td><td>190 100% 50%</td><td>品牌色/按钮/链接</td></tr>
+    <tr><td><span class="swatch" style="background:#1A9E8F"></span>Accent</td><td>#1A9E8F</td><td>170 70% 35%</td><td>辅助色/渐变终点</td></tr>
+    <tr><td><span class="swatch" style="background:#1E2533"></span>Card</td><td>#1E2533</td><td>220 30% 17%</td><td>卡片背景</td></tr>
+    <tr><td><span class="swatch" style="background:#252B36"></span>Muted</td><td>#252B36</td><td>220 20% 18%</td><td>次级背景</td></tr>
+    <tr><td><span class="swatch" style="background:#7E8A9C"></span>Muted FG</td><td>#7E8A9C</td><td>215 15% 55%</td><td>辅助文字</td></tr>
+    <tr><td><span class="swatch" style="background:#2D3544"></span>Border</td><td>#2D3544</td><td>220 20% 22%</td><td>边框/分隔线</td></tr>
+  </table>
+
+  <h3>2.2 状态色</h3>
+  <table>
+    <tr><th>名称</th><th>HEX</th><th>用途</th></tr>
+    <tr><td><span class="swatch" style="background:#19E68C"></span>Connected</td><td>#19E68C</td><td>已连接/加速中</td></tr>
+    <tr><td><span class="swatch" style="background:#F08C28"></span>Disconnected</td><td>#F08C28</td><td>未连接</td></tr>
+    <tr><td><span class="swatch" style="background:#F0C428"></span>Warning</td><td>#F0C428</td><td>积分/金币/警告</td></tr>
+  </table>
+
+  <h3>2.3 渐变色</h3>
+  <table>
+    <tr><th>名称</th><th>CSS值</th><th>用途</th></tr>
+    <tr><td>页面背景</td><td><code>linear-gradient(180deg, #080B11 0%, #0E1219 40%, #151C26 100%)</code></td><td>所有页面背景</td></tr>
+    <tr><td>加速按钮(默认)</td><td><code>linear-gradient(to right, #3B82F6, #06B6D4)</code></td><td>立即提速按钮</td></tr>
+    <tr><td>加速按钮(已连接)</td><td><code>linear-gradient(to right, #10B981, #14B8A6)</code></td><td>停止加速按钮</td></tr>
+    <tr><td>标题文字</td><td><code>linear-gradient(135deg, #1AE6FF, #19C8A0)</code></td><td>"飞鱼加速器"标题</td></tr>
+  </table>
+</div>
+
+<h2>3. 页面结构与导航</h2>
+<div class="section">
+  <h3>3.1 底部导航栏 (BottomNav)</h3>
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h4>布局</h4>
+      <ul>
+        <li>固定底部，z-index: 40</li>
+        <li>背景：glass-card（毛玻璃效果）</li>
+        <li>上边框：border-top 1px solid rgba(255,255,255,0.05)</li>
+        <li>内边距：上 8px, 下 24px, 左右 8px</li>
+      </ul>
+    </div>
+    <div class="spec-card">
+      <h4>导航项</h4>
+      <ul>
+        <li>① <strong>加速</strong> - ⚡ Zap图标 → 首页</li>
+        <li>② <strong>免费会员</strong> - 👑 Crown图标 → 任务中心</li>
+        <li>③ <strong>我的</strong> - 👤 User图标 → 个人中心</li>
+      </ul>
+      <p class="dim">激活态：primary色(#00D4FF) + 图标发光 | 默认态：mutedForeground色</p>
+    </div>
+  </div>
+
+  <h3>3.2 页面导航流</h3>
+  <div class="flow">
+    <span class="flow-item active">首页(加速)</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-item">模式选择</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-item">应用选择</span>
+  </div>
+  <div class="flow">
+    <span class="flow-item active">首页(加速)</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-item">线路选择</span>
+  </div>
+  <div class="flow">
+    <span class="flow-item active">首页(加速)</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-item">分享好友</span>
+  </div>
+  <div class="flow">
+    <span class="flow-item active">免费会员</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-item">积分兑换</span>
+    <span class="flow-arrow">/</span>
+    <span class="flow-item">积分明细</span>
+  </div>
+  <div class="flow">
+    <span class="flow-item active">我的</span>
+    <span class="flow-arrow">→</span>
+    <span class="flow-item">登录</span>
+    <span class="flow-arrow">/</span>
+    <span class="flow-item">设置</span>
+    <span class="flow-arrow">/</span>
+    <span class="flow-item">分享好友</span>
+  </div>
+</div>
+
+<h2>4. 首页 (HomePage)</h2>
+<div class="section">
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h4>顶部栏</h4>
+      <ul>
+        <li>标题："飞鱼加速器" 渐变文字，16px bold</li>
+        <li>右上角："送会员"按钮</li>
+        <li>按钮样式：圆角药丸，border primary/20，内边距 px-3 py-1.5</li>
+        <li>按钮内容：Share2图标(14px) + "送会员"文字(12px)</li>
+      </ul>
+    </div>
+    <div class="spec-card">
+      <h4>状态徽章</h4>
+      <ul>
+        <li>位置：标题下方居中</li>
+        <li>样式：圆角药丸，px-4 py-2</li>
+        <li>默认：primary/8背景 + "准备就绪"</li>
+        <li>连接中：primary/10背景 + "连接中..."</li>
+        <li>已连接：connected/10背景 + "加速中 HH:MM:SS"</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h4>火箭动画区</h4>
+      <ul>
+        <li>尺寸：280 x 245px</li>
+        <li>SVG矢量图，包含：仪表盘弧线 + 刻度 + 火箭</li>
+        <li>连接时：火箭上移7px + 火焰动画</li>
+        <li>仪表盘：160°弧线，21个刻度线</li>
+        <li>火焰：3层椭圆叠加 + 闪烁动画(0.35s)</li>
+      </ul>
+    </div>
+    <div class="spec-card">
+      <h4>加速按钮</h4>
+      <ul>
+        <li>宽度：85%（最大360px）</li>
+        <li>高度：55px</li>
+        <li>圆角：16px (rounded-2xl)</li>
+        <li>文字：18px，不加粗(font-normal)</li>
+        <li>图标：Zap(默认) / Square(已连接)，20px</li>
+        <li>文案：立即提速 / 连接中... / 停止加速</li>
+        <li>按下效果：scale(0.96)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h4>模式/线路卡片</h4>
+      <ul>
+        <li>布局：2列网格(grid-cols-2)，间距12px</li>
+        <li>背景：glass-card</li>
+        <li>内边距：14px</li>
+        <li>图标：32x32圆角方块 + 4px图标</li>
+        <li>标签：10px muted色</li>
+        <li>值：12px medium 前景色</li>
+        <li>右侧：ChevronRight箭头</li>
+      </ul>
+    </div>
+    <div class="spec-card">
+      <h4>广告位</h4>
+      <ul>
+        <li>最小高度：80px</li>
+        <li>虚线边框：1px dashed muted/20</li>
+        <li>内边距：16px</li>
+        <li>占位文字："广告位预留"</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h2>5. 免费会员页 (TaskCenterPage)</h2>
+<div class="section">
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h4>页面标题</h4>
+      <ul>
+        <li>文字："免费会员"</li>
+        <li>字号：20px bold</li>
+        <li>副标题："动动小手，积分兑会员" 14px muted色</li>
+      </ul>
+    </div>
+    <div class="spec-card">
+      <h4>积分卡片</h4>
+      <ul>
+        <li>背景：card + 渐变叠加</li>
+        <li>内边距：16px</li>
+        <li>布局：左右2列，中间竖线分隔</li>
+        <li>竖线：1px solid border/70</li>
+        <li>最小高度：88px</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>5.1 积分卡片详情（三行对齐）</h3>
+  <table>
+    <tr><th>行</th><th>左侧（加速会员）</th><th>右侧（我的积分）</th><th>高度</th></tr>
+    <tr><td>第1行</td><td>⚡图标(24px) + "加速会员"(12px)</td><td>🪙图标(24px) + "我的积分"(12px)</td><td>24px</td></tr>
+    <tr><td>第2行</td><td>"16:25"(24px bold) + "06/26"(9px角标)</td><td>"120"(24px bold)</td><td>32px</td></tr>
+    <tr><td>第3行</td><td>🎁图标 + "兑换" + → (10px primary色)</td><td>🕐图标 + "明细" + → (10px primary色)</td><td>16px</td></tr>
+  </table>
+  <div class="note">
+    <strong>到期时间格式</strong>：大字显示 HH:MM（时间），右下角小字角标显示 MM/DD（日期）
+  </div>
+
+  <h3>5.2 任务列表</h3>
+  <table>
+    <tr><th>任务</th><th>描述</th><th>积分</th><th>图标</th></tr>
+    <tr><td>观看激励广告</td><td>观看一段30秒广告即可获得积分</td><td>+30</td><td>PlayCircle(primary)</td></tr>
+    <tr><td>分享好友</td><td>邀请好友注册，双方各得60积分</td><td>+60</td><td>UserPlus(accent)</td></tr>
+  </table>
+  <div class="note warn">
+    <strong>已隐藏</strong>：签到卡片、其他福利入口（代码已注释，保留备用）
+  </div>
+</div>
+
+<h2>6. 我的页 (ProfilePage)</h2>
+<div class="section">
+  <div class="spec-grid">
+    <div class="spec-card">
+      <h4>用户卡片</h4>
+      <ul>
+        <li>背景：card + 渐变叠加</li>
+        <li>头像：56x56 圆角方块(16px)</li>
+        <li>用户名：16px bold</li>
+        <li>手机号：14px muted色</li>
+        <li>UID：12px primary/70 mono字体</li>
+        <li>底部：积分 + 会员时长</li>
+      </ul>
+    </div>
+    <div class="spec-card">
+      <h4>菜单列表</h4>
+      <ul>
+        <li>背景：glass-card</li>
+        <li>项高度：px-4 py-4</li>
+        <li>图标：32x32 圆角方块</li>
+        <li>标签：14px 前景色</li>
+        <li>右侧：ChevronRight箭头</li>
+        <li>分隔线：ml-62px mr-16px, border-white/8</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>6.1 菜单项</h3>
+  <table>
+    <tr><th>图标</th><th>标签</th><th>颜色</th><th>角标</th></tr>
+    <tr><td>Share2</td><td>分享好友</td><td>primary</td><td>送会员</td></tr>
+    <tr><td>HelpCircle</td><td>帮助中心</td><td>warning</td><td>-</td></tr>
+    <tr><td>MessageCircle</td><td>意见反馈</td><td>secondary</td><td>-</td></tr>
+    <tr><td>Settings</td><td>设置</td><td>muted</td><td>-</td></tr>
+  </table>
+
+  <h3>6.2 登录按钮（未登录状态）</h3>
+  <ul>
+    <li>宽度：100%</li>
+    <li>高度：55px</li>
+    <li>圆角：12px</li>
+    <li>背景：linear-gradient(to right, oceanSurface, accent)</li>
+    <li>文字：14px medium + LogIn图标</li>
+  </ul>
+</div>
+
+<h2>7. 毛玻璃效果 (Glass Card)</h2>
+<div class="section">
+  <table>
+    <tr><th>属性</th><th>值</th><th>说明</th></tr>
+    <tr><td>background</td><td><code>hsla(220, 25%, 17%, 0.9)</code></td><td>半透明背景</td></tr>
+    <tr><td>backdrop-filter</td><td><code>blur(12px)</code></td><td>模糊效果</td></tr>
+    <tr><td>border</td><td><code>1px solid hsla(220, 20%, 25%, 0.7)</code></td><td>边框</td></tr>
+  </table>
+  <div class="note">
+    <strong>Android实现</strong>：可使用 RenderEffect.createBlurEffect (API 31+) 或第三方库实现毛玻璃。低版本可降级为纯色背景 #1E2533 + 90%不透明度。
+  </div>
+</div>
+
+<h2>8. 动画规格</h2>
+<div class="section">
+  <table>
+    <tr><th>动画</th><th>时长</th><th>缓动</th><th>触发条件</th></tr>
+    <tr><td>火箭上浮</td><td>0.7s</td><td>ease-out</td><td>点击加速</td></tr>
+    <tr><td>火焰闪烁</td><td>0.35s</td><td>ease-in-out</td><td>已连接时持续</td></tr>
+    <tr><td>仪表盘发光</td><td>0.5s</td><td>transition</td><td>状态切换</td></tr>
+    <tr><td>按钮缩放</td><td>0.15s</td><td>-</td><td>按下时</td></tr>
+    <tr><td>页面滑入</td><td>0.3s</td><td>ease-out</td><td>子页面进入</td></tr>
+    <tr><td>脉冲发光</td><td>2s</td><td>ease-in-out</td><td>加速按钮持续</td></tr>
+    <tr><td>速度线</td><td>1.2s</td><td>ease-in-out</td><td>已连接时持续</td></tr>
+  </table>
+</div>
+
+<h2>9. 菜单分隔线规范</h2>
+<div class="section">
+  <p>采用 Android 风格分隔线，从图标右侧开始，不覆盖图标区域：</p>
+  <table>
+    <tr><th>属性</th><th>值</th><th>计算</th></tr>
+    <tr><td>margin-left</td><td>62px</td><td>px-4(16px) + icon(32px) + gap(14px)</td></tr>
+    <tr><td>margin-right</td><td>16px</td><td>px-4</td></tr>
+    <tr><td>border</td><td>1px solid rgba(255,255,255,0.08)</td><td>极浅色分隔</td></tr>
+  </table>
+  <p class="dim">适用于：ProfilePage菜单、SettingsPage菜单</p>
+</div>
+
+<h2>10. 图标资源</h2>
+<div class="section">
+  <h3>10.1 内置图标 (Lucide React)</h3>
+  <p>项目使用 <a href="https://lucide.dev" style="color:#00d4ff">Lucide Icons</a>，Android可用 <code>lucide-android</code> 或下载SVG转VectorDrawable。</p>
+  <p>常用图标清单：Zap, Crown, User, Share2, Settings, ChevronRight, Gift, History, ArrowRight, Coins, PlayCircle, UserPlus, Globe, Smartphone, Signal, CalendarCheck, CheckCircle2</p>
+
+  <h3>10.2 自定义素材</h3>
+  <table>
+    <tr><th>文件</th><th>说明</th><th>位置</th></tr>
+    <tr><td>logo.png</td><td>App Logo</td><td>public/images/logo.png</td></tr>
+    <tr><td>logo_v2.png</td><td>App Logo v2</td><td>public/images/logo_v2.png</td></tr>
+    <tr><td>rocket-hd.png</td><td>火箭高清PNG</td><td>public/images/rocket-hd.png</td></tr>
+  </table>
+  <div class="note">
+    火箭图在UI中以SVG矢量渲染（280x245px），同时提供PNG格式供Android原生使用。
+  </div>
+</div>
+
+<h2>11. 关键交互说明</h2>
+<div class="section">
+  <table>
+    <tr><th>交互</th><th>行为</th><th>备注</th></tr>
+    <tr><td>点击加速按钮</td><td>2秒连接延迟 → 状态变为"加速中" + 计时</td><td>按钮文案/颜色/图标三态切换</td></tr>
+    <tr><td>点击停止加速</td><td>立即断开 → 状态恢复"准备就绪"</td><td>图标切换为Square</td></tr>
+    <tr><td>模式切换</td><td>全局加速 ↔ 应用加速 → 应用选择页</td><td>应用加速可选具体App</td></tr>
+    <tr><td>线路切换</td><td>智能优选 / 日本 / 美国 / 新加坡 / 欧洲</td><td>返回后首页显示当前线路</td></tr>
+    <tr><td>积分兑换</td><td>扣除积分 → 增加会员时长</td><td>兑换选项：50分=30min, 100分=1h, 200分=2h</td></tr>
+    <tr><td>分享好友</td><td>跳转分享页 → 邀请注册</td><td>邀请奖励：双方各60积分</td></tr>
+  </table>
+</div>
+
+<h2>12. 技术备注</h2>
+<div class="section">
+  <ul>
+    <li><strong>PWA支持</strong>：manifest.json 已配置，支持添加到主屏幕</li>
+    <li><strong>响应式</strong>：以375px为基准，按钮使用 max-width 约束</li>
+    <li><strong>状态栏</strong>：顶部预留48px，适配刘海屏/挖孔屏</li>
+    <li><strong>安全区域</strong>：底部导航预留24px paddingBottom，适配全面屏</li>
+    <li><strong>滚动</strong>：自定义滚动条（4px宽，深色轨道）</li>
+    <li><strong>图标库</strong>：Lucide React → Android 可使用 SVG 转 VectorDrawable</li>
+  </ul>
+</div>
+
+</body>
+</html>
