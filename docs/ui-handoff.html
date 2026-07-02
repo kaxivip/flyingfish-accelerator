@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>飞鱼加速器 · UI 开发交付文档</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --primary: #00c8ff;
+    --primary-dim: rgba(0,200,255,0.12);
+    --green: #3fb950;
+    --yellow: #d29922;
+    --purple: #a371f7;
+    --orange: #f78166;
+    --red: #f85149;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'SF Pro Display', 'PingFang SC', 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* Layout */
+  .layout { display:flex; min-height:100vh; }
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 24px 0;
+  }
+  .sidebar-logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .sidebar-logo .app-name { font-size:15px; font-weight:700; color:var(--primary); }
+  .sidebar-logo .doc-name { font-size:11px; color:var(--text3); margin-top:2px; }
+  .sidebar nav a {
+    display:block;
+    padding: 6px 20px;
+    font-size:12.5px;
+    color: var(--text2);
+    text-decoration:none;
+    border-left: 2px solid transparent;
+    transition: all .15s;
+  }
+  .sidebar nav a:hover { color:var(--text); background:var(--bg3); }
+  .sidebar nav a.active { color:var(--primary); border-left-color:var(--primary); background:var(--primary-dim); }
+  .sidebar nav .section-title {
+    padding: 12px 20px 4px;
+    font-size:10px;
+    font-weight:600;
+    color:var(--text3);
+    text-transform:uppercase;
+    letter-spacing:.6px;
+  }
+  .main { flex:1; min-width:0; padding: 40px 56px; max-width: 900px; }
+
+  /* Headings */
+  h1 { font-size:28px; font-weight:700; color:var(--text); margin-bottom:8px; }
+  h2 {
+    font-size:20px; font-weight:700; color:var(--text);
+    margin: 48px 0 16px;
+    padding-bottom:8px;
+    border-bottom: 1px solid var(--border);
+  }
+  h2:first-of-type { margin-top:0; }
+  h3 { font-size:15px; font-weight:600; color:var(--text); margin: 24px 0 10px; }
+  h4 { font-size:13px; font-weight:600; color:var(--text2); margin: 16px 0 8px; }
+
+  /* Doc header */
+  .doc-header {
+    background: linear-gradient(135deg, var(--bg2) 0%, #0e1d2e 100%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 40px;
+  }
+  .doc-header .subtitle { color:var(--text2); font-size:13px; margin-top:6px; }
+  .meta-row { display:flex; gap:24px; margin-top:18px; flex-wrap:wrap; }
+  .meta-item { font-size:12px; color:var(--text3); }
+  .meta-item span { color:var(--text2); }
+
+  /* Cards */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom:16px;
+  }
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-bottom:16px; }
+  .card-grid .card { margin-bottom:0; }
+
+  /* Tables */
+  table { width:100%; border-collapse:collapse; margin:12px 0 20px; font-size:13px; }
+  th { background:var(--bg3); color:var(--text2); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.4px; padding:8px 12px; text-align:left; border-bottom:1px solid var(--border); }
+  td { padding:8px 12px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--bg3); }
+
+  /* Badges */
+  .badge {
+    display:inline-block;
+    font-size:11px;
+    font-weight:600;
+    padding: 2px 8px;
+    border-radius:20px;
+    line-height:1.6;
+  }
+  .badge-blue { background:rgba(0,200,255,.12); color:var(--primary); }
+  .badge-green { background:rgba(63,185,80,.12); color:var(--green); }
+  .badge-yellow { background:rgba(210,153,34,.12); color:var(--yellow); }
+  .badge-purple { background:rgba(163,113,247,.12); color:var(--purple); }
+  .badge-orange { background:rgba(247,129,102,.12); color:var(--orange); }
+  .badge-gray { background:var(--bg3); color:var(--text2); }
+
+  /* Color swatches */
+  .swatch-grid { display:flex; flex-wrap:wrap; gap:12px; margin:12px 0; }
+  .swatch {
+    display:flex; align-items:center; gap:10px;
+    background:var(--bg2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:8px 12px;
+    min-width:200px;
+  }
+  .swatch-dot { width:28px; height:28px; border-radius:6px; flex-shrink:0; }
+  .swatch-info .name { font-size:12px; font-weight:600; color:var(--text); }
+  .swatch-info .hex { font-size:11px; color:var(--text3); font-family:monospace; }
+
+  /* Page flow diagram */
+  .flow { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:12px 0 20px; }
+  .flow-node {
+    background:var(--bg3); border:1px solid var(--border);
+    border-radius:var(--radius-sm); padding:5px 12px;
+    font-size:12px; color:var(--text);
+    white-space:nowrap;
+  }
+  .flow-node.highlight { border-color:var(--primary); color:var(--primary); background:var(--primary-dim); }
+  .flow-arrow { color:var(--text3); font-size:14px; }
+
+  /* Page list */
+  .page-item {
+    display:flex; align-items:flex-start; gap:16px;
+    padding:14px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .page-item:last-child { border-bottom:none; }
+  .page-icon {
+    width:36px; height:36px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; flex-shrink:0; margin-top:2px;
+  }
+  .page-info .page-name { font-size:14px; font-weight:600; color:var(--text); }
+  .page-info .page-file { font-size:11px; color:var(--text3); font-family:monospace; margin:2px 0 4px; }
+  .page-info .page-desc { font-size:12.5px; color:var(--text2); line-height:1.5; }
+
+  /* Code */
+  code {
+    font-family:'SF Mono','Fira Code','Consolas',monospace;
+    font-size:12px;
+    background:var(--bg3);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1px 6px;
+    color:#e6edf3;
+  }
+  pre {
+    background:var(--bg2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:16px;
+    overflow-x:auto;
+    font-size:12px;
+    font-family:'SF Mono','Fira Code','Consolas',monospace;
+    line-height:1.7;
+    margin:10px 0 16px;
+    color:#e6edf3;
+  }
+  pre .comment { color:var(--text3); }
+  pre .key { color:var(--primary); }
+  pre .val { color:#a5d6ff; }
+  pre .str { color:#a8ff78; }
+
+  /* Lists */
+  ul, ol { padding-left:20px; margin:8px 0; }
+  li { margin-bottom:4px; color:var(--text2); font-size:13px; }
+  li strong { color:var(--text); }
+
+  /* Divider */
+  .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
+
+  /* Tips */
+  .tip {
+    border-left:3px solid var(--primary);
+    background:var(--primary-dim);
+    border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+    padding:10px 14px;
+    margin:10px 0 16px;
+    font-size:12.5px;
+    color:var(--text2);
+  }
+  .tip.warn { border-color:var(--yellow); background:rgba(210,153,34,.08); }
+  .tip.green { border-color:var(--green); background:rgba(63,185,80,.08); }
+
+  /* Footer */
+  .footer { padding:40px 0 24px; color:var(--text3); font-size:12px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="app-name">🐟 飞鱼加速器</div>
+    <div class="doc-name">UI 开发交付文档</div>
+  </div>
+  <nav>
+    <div class="section-title">概览</div>
+    <a href="#overview">项目概述</a>
+    <a href="#tech">技术栈</a>
+    <a href="#structure">目录结构</a>
+
+    <div class="section-title">设计规范</div>
+    <a href="#theme">视觉主题</a>
+    <a href="#colors">色彩系统</a>
+    <a href="#typography">字体规范</a>
+    <a href="#components">通用组件</a>
+
+    <div class="section-title">页面清单</div>
+    <a href="#startup">启动 &amp; 登录</a>
+    <a href="#main">主功能区</a>
+    <a href="#settings-pages">设置 &amp; 个人中心</a>
+    <a href="#sub-pages">二级页面</a>
+
+    <div class="section-title">页面流程</div>
+    <a href="#flow">导航流转图</a>
+
+    <div class="section-title">资源</div>
+    <a href="#assets">静态资源</a>
+    <a href="#deploy">构建 &amp; 部署</a>
+  </nav>
+</aside>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Doc Header -->
+  <div class="doc-header">
+    <h1>飞鱼加速器 · UI 开发交付文档</h1>
+    <div class="subtitle">本文档完整描述飞鱼加速器 H5 应用的页面结构、交互逻辑、设计规范及资源路径，供安卓 WebView 开发对接使用。</div>
+    <div class="meta-row">
+      <div class="meta-item">版本：<span>v2.0</span></div>
+      <div class="meta-item">技术框架：<span>React 18 + Vite + TypeScript</span></div>
+      <div class="meta-item">入口：<span>index.html → app.html</span></div>
+      <div class="meta-item">GitHub：<span>kaxivip/flyingfish-accelerator</span></div>
+    </div>
+  </div>
+
+  <!-- 项目概述 -->
+  <h2 id="overview">项目概述</h2>
+  <p style="color:var(--text2);margin-bottom:16px;">飞鱼加速器是一款面向国内用户的免费海外网络加速工具，基于 H5 + PWA 构建，可嵌入安卓 WebView 运行。产品定位：<strong>真·免费</strong>，通过激励广告与邀请机制驱动用户增长。</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4 style="margin-top:0">🎯 产品定位</h4>
+      <p style="color:var(--text2);font-size:12.5px;">永久免费 VPN 加速工具，通过积分换取会员时长</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">📱 运行载体</h4>
+      <p style="color:var(--text2);font-size:12.5px;">安卓 WebView / iOS Safari PWA / 浏览器</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">🌐 页面总数</h4>
+      <p style="color:var(--text2);font-size:12.5px;">20 个功能页面 + 1 个桌面首页</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">🎨 视觉风格</h4>
+      <p style="color:var(--text2);font-size:12.5px;">深海蓝 Dark Theme，霓虹青色主色调</p>
+    </div>
+  </div>
+
+  <!-- 技术栈 -->
+  <h2 id="tech">技术栈</h2>
+  <table>
+    <tr><th>分类</th><th>技术</th><th>版本</th><th>说明</th></tr>
+    <tr><td>前端框架</td><td>React</td><td>18.3.1</td><td>函数式组件 + Hooks</td></tr>
+    <tr><td>构建工具</td><td>Vite</td><td>6.4.3</td><td>多页面配置（main + app）</td></tr>
+    <tr><td>类型系统</td><td>TypeScript</td><td>5.6.2</td><td>全量类型覆盖</td></tr>
+    <tr><td>样式方案</td><td>Tailwind CSS</td><td>3.x</td><td>原子类 + CSS 变量设计 Token</td></tr>
+    <tr><td>图标库</td><td>lucide-react</td><td>latest</td><td>统一 SVG 图标系统</td></tr>
+    <tr><td>UI 组件</td><td>shadcn/ui</td><td>-</td><td>Card 等基础组件</td></tr>
+    <tr><td>状态管理</td><td>React useState</td><td>-</td><td>组件本地状态，App.tsx 集中管理全局态</td></tr>
+  </table>
+
+  <h3>构建命令</h3>
+  <pre><span class="comment"># 开发调试</span>
+<span class="key">npm run dev</span>               <span class="comment"># 默认 http://localhost:5173</span>
+<span class="key">node node_modules/vite/bin/vite.js --port 3000</span>  <span class="comment"># 指定端口</span>
+
+<span class="comment"># 生产构建</span>
+<span class="key">npm run build</span>             <span class="comment"># 输出到 dist/</span>
+
+<span class="comment"># PowerShell 需要先执行</span>
+<span class="key">Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</span></pre>
+
+  <!-- 目录结构 -->
+  <h2 id="structure">目录结构</h2>
+  <pre><span class="key">flyingfish-accelerator/</span>
+├── <span class="str">index.html</span>           <span class="comment"># 模拟手机桌面首页（纯静态 HTML）</span>
+├── <span class="str">app.html</span>             <span class="comment"># React 应用入口（WebView 直接加载此页）</span>
+├── <span class="key">public/</span>
+│   ├── images/
+│   │   ├── <span class="str">fy-logo001.png</span>   <span class="comment"># 应用内专用 LOGO（纯图标）</span>
+│   │   └── <span class="str">fy-logo002.png</span>   <span class="comment"># 桌面入口 LOGO（带"真·免费"横幅）</span>
+│   ├── desktop.html         <span class="comment"># 旧版暗色桌面（备用）</span>
+│   └── manifest.json        <span class="comment"># PWA 配置</span>
+├── <span class="key">src/</span>
+│   ├── App.tsx              <span class="comment"># 全局状态管理 + 路由切换中枢</span>
+│   ├── index.css            <span class="comment"># 设计 Token + 全局样式</span>
+│   ├── main.tsx             <span class="comment"># React 挂载入口</span>
+│   ├── <span class="key">pages/</span>             <span class="comment"># 20 个页面组件</span>
+│   ├── <span class="key">components/</span>        <span class="comment"># 可复用组件</span>
+│   └── <span class="key">lib/</span>               <span class="comment"># 工具函数 + 应用数据</span>
+└── vite.config.ts           <span class="comment"># 多页构建配置</span></pre>
+
+  <hr class="divider">
+
+  <!-- 视觉主题 -->
+  <h2 id="theme">视觉主题</h2>
+  <p style="color:var(--text2);margin-bottom:16px;">全局采用<strong>深海暗色主题（Deep Ocean Dark）</strong>，仅支持 Dark Mode，不提供 Light Mode 切换。</p>
+
+  <div class="tip">背景层次：<code>--background</code>（最深）→ <code>--ocean-mid</code>（卡片层）→ <code>glass-card</code>（毛玻璃浮层）</div>
+
+  <h3>背景渐变</h3>
+  <table>
+    <tr><th>类名</th><th>用途</th><th>值</th></tr>
+    <tr><td><code>.bg-ocean-gradient</code></td><td>所有页面主背景</td><td><code>linear-gradient(180deg, hsl(220 35% 5%) → hsl(215 25% 12%))</code></td></tr>
+    <tr><td><code>.glass-card</code></td><td>内容卡片/毛玻璃</td><td><code>hsl(220 25% 17% / 0.9)</code> + <code>backdrop-filter:blur(12px)</code></td></tr>
+    <tr><td><code>.glow-primary</code></td><td>LOGO、按钮发光效果</td><td><code>box-shadow: 0 0 20px hsl(190 100% 50% / 0.2)</code></td></tr>
+  </table>
+
+  <!-- 色彩系统 -->
+  <h2 id="colors">色彩系统</h2>
+  <h3>主色调</h3>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-dot" style="background:#00c8ff"></div><div class="swatch-info"><div class="name">Primary — 霓虹青</div><div class="hex">--primary: hsl(190 100% 50%) · #00c8ff</div></div></div>
+    <div class="swatch"><div class="swatch-dot" style="background:#00b8a0"></div><div class="swatch-info"><div class="name">Accent — 蓝绿</div><div class="hex">--accent: hsl(170 70% 35%) · #00b8a0</div></div></div>
+    <div class="swatch"><div class="swatch-dot" style="background:hsl(220,35%,5%)"></div><div class="swatch-info"><div class="name">Background — 深蓝黑</div><div class="hex">--background: hsl(220 35% 5%) · #060d1a</div></div></div>
+    <div class="swatch"><div class="swatch-dot" style="background:hsl(220,30%,17%)"></div><div class="swatch-info"><div class="name">Card — 卡片底色</div><div class="hex">--card: hsl(220 30% 17%) · #1d2638</div></div></div>
+  </div>
+
+  <h3>状态色</h3>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-dot" style="background:#3fb950"></div><div class="swatch-info"><div class="name">Connected — 已连接</div><div class="hex">--status-connected: hsl(150 80% 50%)</div></div></div>
+    <div class="swatch"><div class="swatch-dot" style="background:#f0863a"></div><div class="swatch-info"><div class="name">Disconnected — 未连接</div><div class="hex">--status-disconnected: hsl(30 90% 55%)</div></div></div>
+    <div class="swatch"><div class="swatch-dot" style="background:#d4a017"></div><div class="swatch-info"><div class="name">Warning — 警告/奖励</div><div class="hex">--status-warning: hsl(45 90% 55%)</div></div></div>
+    <div class="swatch"><div class="swatch-dot" style="background:#f85149"></div><div class="swatch-info"><div class="name">Destructive — 危险操作</div><div class="hex">--destructive: hsl(0 72% 51%)</div></div></div>
+  </div>
+
+  <h3>功能色（非 Token）</h3>
+  <table>
+    <tr><th>色值</th><th>使用场景</th></tr>
+    <tr><td><code>#ff6b35</code></td><td>商务合作入口、广告主标签</td></tr>
+    <tr><td><code>#af52de</code></td><td>积分页、品牌合作模块</td></tr>
+    <tr><td><code>#5ac8fa</code></td><td>出海推广模块</td></tr>
+    <tr><td><code>#ffd60a</code></td><td>专属冠名模块</td></tr>
+  </table>
+
+  <!-- 字体规范 -->
+  <h2 id="typography">字体规范</h2>
+  <table>
+    <tr><th>层级</th><th>字号</th><th>字重</th><th>颜色</th><th>用途</th></tr>
+    <tr><td>页面标题 h1</td><td>20–21px</td><td>700</td><td><code>--foreground</code></td><td>页面顶部标题（我的、首页等）</td></tr>
+    <tr><td>卡片标题 h2</td><td>14–15px</td><td>600</td><td><code>--foreground</code></td><td>卡片/模块标题</td></tr>
+    <tr><td>正文</td><td>13–14px</td><td>400</td><td><code>--foreground</code></td><td>内容文字</td></tr>
+    <tr><td>次要文字</td><td>12–13px</td><td>400</td><td><code>--muted-foreground</code></td><td>描述、辅助说明</td></tr>
+    <tr><td>小标签</td><td>10–11px</td><td>500–600</td><td>场景色</td><td>Badge、标注、分隔标题</td></tr>
+    <tr><td>Mono/代码</td><td>12px</td><td>400</td><td><code>--text3</code></td><td>UID、邀请码、积分编号</td></tr>
+  </table>
+  <div class="tip">字体族：<code>-apple-system, 'PingFang SC', 'Helvetica Neue', 'Microsoft YaHei', sans-serif</code></div>
+
+  <!-- 通用组件 -->
+  <h2 id="components">通用组件</h2>
+  <div class="page-item">
+    <div class="page-icon" style="background:var(--primary-dim)">🧭</div>
+    <div class="page-info">
+      <div class="page-name">BottomNav — 底部导航</div>
+      <div class="page-file">src/components/BottomNav.tsx</div>
+      <div class="page-desc">三 Tab：首页 / 免费会员 / 我的。仅在 <code>stage === "main"</code> 时展示，高度 64px，固定底部。</div>
+    </div>
+  </div>
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(63,185,80,.12)">🚀</div>
+    <div class="page-info">
+      <div class="page-name">AccelerateButton — 飞鱼动画</div>
+      <div class="page-file">src/components/AccelerateButton.tsx</div>
+      <div class="page-desc">主页中央飞鱼加速动画组件。三态：未连接 / 连接中（旋转）/ 已连接（发光）。与下方「立即提速」按钮分离，通过 <code>hideButton</code> prop 控制。</div>
+    </div>
+  </div>
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(210,153,34,.12)">📱</div>
+    <div class="page-info">
+      <div class="page-name">PhoneFrame — 手机外壳</div>
+      <div class="page-file">src/components/PhoneFrame.tsx</div>
+      <div class="page-desc">PC 端展示时包裹手机模拟外框（430px 最大宽）。移动端全屏。</div>
+    </div>
+  </div>
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(163,113,247,.12)">➕</div>
+    <div class="page-info">
+      <div class="page-name">AddToHomeScreenPrompt — 添加桌面提示</div>
+      <div class="page-file">src/components/AddToHomeScreenPrompt.tsx</div>
+      <div class="page-desc">iOS PWA 引导添加到主屏幕的浮层提示，全局挂载于 App 根组件。</div>
+    </div>
+  </div>
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(0,200,255,.12)">🃏</div>
+    <div class="page-info">
+      <div class="page-name">Card / CardContent — 基础卡片</div>
+      <div class="page-file">src/components/ui/card.tsx</div>
+      <div class="page-desc">shadcn/ui 标准卡片，结合 <code>.glass-card</code> 类使用实现毛玻璃效果。</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 启动 & 登录 -->
+  <h2 id="startup">启动 &amp; 登录</h2>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:var(--primary-dim)">🌊</div>
+    <div class="page-info">
+      <div class="page-name">SplashPage — 开屏页 <span class="badge badge-blue">stage: splash</span></div>
+      <div class="page-file">src/pages/SplashPage.tsx</div>
+      <div class="page-desc">
+        展示 <code>fy-logo001.png</code>（112×112）+ 应用名 + Slogan「一触即飞，畅游全球」。自动 2s 后跳转。<br>
+        <strong>注：</strong>底部蓝色进度条已移除。
+      </div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(163,113,247,.12)">🔒</div>
+    <div class="page-info">
+      <div class="page-name">Privacy Modal — 隐私弹窗 <span class="badge badge-purple">stage: privacy</span></div>
+      <div class="page-file">src/App.tsx（内联）</div>
+      <div class="page-desc">
+        首次启动展示隐私政策确认弹窗（fullscreen overlay）。包含：LOGO + 标题、内容滚动区、「不同意」/「同意并继续」按钮。<br>
+        同意后写 <code>localStorage.privacy_agreed = "1"</code>，进入主界面。不同意返回 Splash。
+      </div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(63,185,80,.12)">🔑</div>
+    <div class="page-info">
+      <div class="page-name">LoginPage — 登录页 <span class="badge badge-green">stage: login</span></div>
+      <div class="page-file">src/pages/LoginPage.tsx</div>
+      <div class="page-desc">
+        包含：LOGO（64×64）、手机号输入框（mock）、登录按钮。<br>
+        <strong>邀请码功能：</strong>底部可展开输入区，点击「🎁 有邀请码？首次注册送100积分」展开输入框。填写有效邀请码（≥4位）登录后自动发放 100 积分。
+      </div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(0,200,255,.12)">📄</div>
+    <div class="page-info">
+      <div class="page-name">AgreementPage — 协议页 <span class="badge badge-gray">stage: agreement</span></div>
+      <div class="page-file">src/pages/AgreementPage.tsx</div>
+      <div class="page-desc">复用于隐私政策与用户协议，由 <code>type: "privacy" | "service"</code> 控制内容切换。返回时回到来源页（<code>agreementReturnTo</code>）。</div>
+    </div>
+  </div>
+
+  <!-- 主功能区 -->
+  <h2 id="main">主功能区（stage: main）</h2>
+  <div class="tip green">主功能区由 BottomNav 管理三个 Tab，通过 <code>currentPage: "home" | "tasks" | "profile"</code> 切换，不产生路由跳转。</div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:var(--primary-dim)">⚡</div>
+    <div class="page-info">
+      <div class="page-name">HomePage — 首页 Tab <span class="badge badge-blue">currentPage: home</span></div>
+      <div class="page-file">src/pages/HomePage.tsx</div>
+      <div class="page-desc">
+        <strong>布局（从上到下）：</strong>Header（品牌名 + 分享按钮）→ 状态指示器（准备就绪 / 连接中... / 加速中 HH:MM:SS）→ 飞鱼动画 → 「立即提速」大按钮（85% 宽，55px 高）→ 模式卡片 + 线路卡片（2列）→ 广告位占位。<br>
+        <strong>按钮三态颜色：</strong>未连接：蓝→青 / 连接中：深青→蓝 / 已连接：绿→蓝绿。<br>
+        <strong>广告位：</strong>底部卡片内保留 80px 高虚线框占位，文案「广告位预留」。
+      </div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(210,153,34,.12)">🎯</div>
+    <div class="page-info">
+      <div class="page-name">TaskCenterPage — 免费会员 Tab <span class="badge badge-yellow">currentPage: tasks</span></div>
+      <div class="page-file">src/pages/TaskCenterPage.tsx</div>
+      <div class="page-desc">
+        <strong>顶部：</strong>积分余额卡（当前积分 + 会员到期时间）+ 积分明细入口 + 兑换按钮。<br>
+        <strong>任务列表：</strong>① 分享好友得积分（→SharePage）② 看激励广告赚积分（最多8次/天，每次+50积分，含模拟进度动效）。<br>
+        <strong>其他福利：</strong>入口卡跳转 OtherBenefitsPage。<br>
+        <strong>注：</strong>「领取邀请奖励」任务已移除。
+      </div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(163,113,247,.12)">👤</div>
+    <div class="page-info">
+      <div class="page-name">ProfilePage — 我的 Tab <span class="badge badge-purple">currentPage: profile</span></div>
+      <div class="page-file">src/pages/ProfilePage.tsx</div>
+      <div class="page-desc">
+        <strong>用户卡：</strong>登录时显示 LOGO + 手机号（脱敏）+ UID；未登录显示「立即登录」按钮。<br>
+        <strong>菜单列表（顺序）：</strong>分享好友（送会员 badge）→ 帮助中心 → 意见反馈 → 商务合作（广告主 badge，橙色）→ 设置。
+      </div>
+    </div>
+  </div>
+
+  <!-- 设置 & 个人中心 -->
+  <h2 id="settings-pages">设置 &amp; 个人中心</h2>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(0,200,255,.08)">⚙️</div>
+    <div class="page-info">
+      <div class="page-name">SettingsPage — 设置 <span class="badge badge-gray">stage: settings</span></div>
+      <div class="page-file">src/pages/SettingsPage.tsx</div>
+      <div class="page-desc">
+        功能项：消息通知开关、清除缓存（弹窗确认）、检查更新（模拟下载 → 安装 → 完成流程）、其他平台（→OtherPlatformsPage）、关于飞鱼（→AboutPage）、隐私政策、用户协议、账号注销（登录态下可见）、退出登录。
+      </div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(248,81,73,.12)">🗑️</div>
+    <div class="page-info">
+      <div class="page-name">AccountDeletePage — 账号注销 <span class="badge badge-gray">stage: account-delete</span></div>
+      <div class="page-file">src/pages/AccountDeletePage.tsx</div>
+      <div class="page-desc">两步确认流程：注意事项列表 → 「我已了解，确认注销」输入框 → 最终确认按钮。注销后清空登录态返回主界面。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(63,185,80,.08)">ℹ️</div>
+    <div class="page-info">
+      <div class="page-name">AboutPage — 关于飞鱼 <span class="badge badge-gray">stage: about</span></div>
+      <div class="page-file">src/pages/AboutPage.tsx</div>
+      <div class="page-desc">展示 LOGO（72×72）+ 版本号 + 简介 + 开发团队信息。从 SettingsPage 进入，返回 SettingsPage。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(210,153,34,.08)">❓</div>
+    <div class="page-info">
+      <div class="page-name">HelpCenterPage — 帮助中心 <span class="badge badge-gray">stage: help-center</span></div>
+      <div class="page-file">src/pages/HelpCenterPage.tsx</div>
+      <div class="page-desc">FAQ 手风琴列表，分「加速 FAQ」和「会员积分 FAQ」两组，点击展开/收起。从 ProfilePage → 帮助中心入口进入。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(247,129,102,.12)">🤝</div>
+    <div class="page-info">
+      <div class="page-name">BusinessCoopPage — 商务合作 <span class="badge badge-orange">stage: business-coop</span></div>
+      <div class="page-file">src/pages/BusinessCoopPage.tsx</div>
+      <div class="page-desc">
+        简洁风格。简介 + 4种合作方向卡片（广告投放 / 出海推广 / 资源置换 / 品牌合作）+ 联系邮箱（<code>app@unitedcloud.net</code>，点击唤起邮件客户端）。
+      </div>
+    </div>
+  </div>
+
+  <!-- 二级页面 -->
+  <h2 id="sub-pages">二级页面</h2>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(210,153,34,.12)">📤</div>
+    <div class="page-info">
+      <div class="page-name">SharePage — 分享好友 <span class="badge badge-gray">stage: share</span></div>
+      <div class="page-file">src/pages/SharePage.tsx</div>
+      <div class="page-desc">展示邀请码（12345678）+ 复制邀请文案按钮 + 奖励规则说明（+100积分 + 1:1返积分 30天）+ 参与步骤。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(0,200,255,.08)">🌐</div>
+    <div class="page-info">
+      <div class="page-name">ModeSelectPage — 加速模式选择 <span class="badge badge-gray">stage: mode-select</span></div>
+      <div class="page-file">src/pages/ModeSelectPage.tsx</div>
+      <div class="page-desc">全局加速 vs 应用加速，选择应用加速时可进入 AppSelectPage 配置应用白名单。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(163,113,247,.08)">📶</div>
+    <div class="page-info">
+      <div class="page-name">LineSelectPage — 线路选择 <span class="badge badge-gray">stage: line-select</span></div>
+      <div class="page-file">src/pages/LineSelectPage.tsx</div>
+      <div class="page-desc">线路列表：智能优选（默认）、香港节点、日本节点、美国节点、新加坡节点。每条线路显示延迟状态标签。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(63,185,80,.08)">📱</div>
+    <div class="page-info">
+      <div class="page-name">AppSelectPage — 应用选择 <span class="badge badge-gray">stage: app-select</span></div>
+      <div class="page-file">src/pages/AppSelectPage.tsx</div>
+      <div class="page-desc">勾选需要加速的 App（YouTube、Telegram、ChatGPT 等预置列表），支持多选，实时同步到首页模式卡片。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(247,129,102,.08)">🎁</div>
+    <div class="page-info">
+      <div class="page-name">OtherBenefitsPage — 其他福利 <span class="badge badge-gray">stage: other-benefits</span></div>
+      <div class="page-file">src/pages/OtherBenefitsPage.tsx</div>
+      <div class="page-desc">更多福利任务列表，包含任务提交（→TaskSubmitPage）流程，完成后发放积分奖励。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(0,200,255,.08)">💰</div>
+    <div class="page-info">
+      <div class="page-name">PointsExchangePage — 积分兑换 <span class="badge badge-gray">stage: points-exchange</span></div>
+      <div class="page-file">src/pages/PointsExchangePage.tsx</div>
+      <div class="page-desc">积分兑换会员时长。规则：100积分=1小时会员，最低消费50积分=30分钟。不足积分按钮 disabled。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(210,153,34,.08)">📋</div>
+    <div class="page-info">
+      <div class="page-name">PointsHistoryPage — 积分明细 <span class="badge badge-gray">stage: points-history</span></div>
+      <div class="page-file">src/pages/PointsHistoryPage.tsx</div>
+      <div class="page-desc">流水记录列表（最多 50 条 mock 数据），区分收入（绿色+）和支出（红色-），显示时间戳。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(163,113,247,.08)">🌏</div>
+    <div class="page-info">
+      <div class="page-name">OtherPlatformsPage — 其他平台 <span class="badge badge-gray">stage: other-platforms</span></div>
+      <div class="page-file">src/pages/OtherPlatformsPage.tsx</div>
+      <div class="page-desc">展示其他可用平台下载/访问链接，从 SettingsPage 进入。</div>
+    </div>
+  </div>
+
+  <div class="page-item">
+    <div class="page-icon" style="background:rgba(63,185,80,.08)">✅</div>
+    <div class="page-info">
+      <div class="page-name">TaskSubmitPage — 任务提交 <span class="badge badge-gray">stage: task-submit</span></div>
+      <div class="page-file">src/pages/TaskSubmitPage.tsx</div>
+      <div class="page-desc">截图/凭证上传式任务核验流程（mock），提交成功后返回 OtherBenefitsPage 并发放积分。</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 导航流转 -->
+  <h2 id="flow">导航流转图</h2>
+
+  <h3>启动链路</h3>
+  <div class="flow">
+    <div class="flow-node highlight">index.html（桌面）</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">app.html</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">SplashPage</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">Privacy Modal</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node highlight">main（HomePage）</div>
+  </div>
+
+  <h3>主界面内部导航</h3>
+  <div class="flow">
+    <div class="flow-node highlight">HomePage</div>
+    <div class="flow-arrow">⇄</div>
+    <div class="flow-node highlight">TaskCenterPage</div>
+    <div class="flow-arrow">⇄</div>
+    <div class="flow-node highlight">ProfilePage</div>
+  </div>
+  <p style="color:var(--text3);font-size:12px;margin:4px 0 16px;">↑ 三 Tab 通过 BottomNav 平级切换，均在 stage=main 内</p>
+
+  <h3>从主界面跳出的全屏页面（stage 切换）</h3>
+  <table>
+    <tr><th>来源</th><th>触发</th><th>目标 Stage</th></tr>
+    <tr><td>HomePage</td><td>「送会员」按钮 / 分享好友入口</td><td>share</td></tr>
+    <tr><td>HomePage</td><td>模式卡片点击</td><td>mode-select</td></tr>
+    <tr><td>HomePage</td><td>线路卡片点击</td><td>line-select</td></tr>
+    <tr><td>TaskCenterPage</td><td>「其他福利」入口</td><td>other-benefits</td></tr>
+    <tr><td>TaskCenterPage</td><td>积分兑换按钮</td><td>points-exchange</td></tr>
+    <tr><td>TaskCenterPage</td><td>积分明细入口</td><td>points-history</td></tr>
+    <tr><td>OtherBenefitsPage</td><td>任务提交</td><td>task-submit</td></tr>
+    <tr><td>ProfilePage</td><td>分享好友</td><td>share</td></tr>
+    <tr><td>ProfilePage</td><td>帮助中心</td><td>help-center</td></tr>
+    <tr><td>ProfilePage</td><td>商务合作</td><td>business-coop</td></tr>
+    <tr><td>ProfilePage</td><td>设置</td><td>settings</td></tr>
+    <tr><td>SettingsPage</td><td>关于飞鱼</td><td>about</td></tr>
+    <tr><td>SettingsPage</td><td>其他平台</td><td>other-platforms</td></tr>
+    <tr><td>SettingsPage</td><td>账号注销</td><td>account-delete</td></tr>
+    <tr><td>任意页</td><td>隐私政策/用户协议链接</td><td>agreement</td></tr>
+  </table>
+
+  <hr class="divider">
+
+  <!-- 静态资源 -->
+  <h2 id="assets">静态资源</h2>
+  <h3>LOGO 用途规范</h3>
+  <table>
+    <tr><th>文件</th><th>尺寸</th><th>用途</th></tr>
+    <tr><td><code>public/images/fy-logo001.png</code></td><td>1024×1024</td><td>应用内所有页面（开屏、登录、我的、关于、隐私弹窗）</td></tr>
+    <tr><td><code>public/images/fy-logo002.png</code></td><td>1094×1094</td><td>桌面首页两个入口图标（带"真·免费"红色横幅）</td></tr>
+  </table>
+
+  <div class="tip warn">
+    <strong>注意：</strong>fy-logo001（纯图标）用于应用内，fy-logo002（带横幅）仅限桌面启动图标，不得在应用内部使用。
+  </div>
+
+  <h3>所有图片引用路径（构建后相对路径）</h3>
+  <table>
+    <tr><th>位置</th><th>引用路径</th><th>尺寸</th></tr>
+    <tr><td>SplashPage LOGO</td><td><code>./images/fy-logo001.png</code></td><td>112×112 (w-28 h-28)</td></tr>
+    <tr><td>LoginPage LOGO</td><td><code>./images/fy-logo001.png</code></td><td>64×64 (w-16 h-16)</td></tr>
+    <tr><td>ProfilePage 头像</td><td><code>./images/fy-logo001.png</code></td><td>56×56 (w-14 h-14)</td></tr>
+    <tr><td>AboutPage LOGO</td><td><code>./images/fy-logo001.png</code></td><td>72×72</td></tr>
+    <tr><td>隐私弹窗 LOGO</td><td><code>./images/fy-logo001.png</code></td><td>56×56 (w-14 h-14)</td></tr>
+    <tr><td>桌面入口1（真·免费）</td><td><code>./images/fy-logo002.png</code></td><td>充满图标格</td></tr>
+    <tr><td>桌面入口2（普通）</td><td><code>./images/fy-logo002.png</code></td><td>充满图标格</td></tr>
+    <tr><td>app.html favicon</td><td><code>./images/fy-logo001.png</code></td><td>-</td></tr>
+    <tr><td>apple-touch-icon</td><td><code>./images/fy-logo001.png</code></td><td>-</td></tr>
+  </table>
+
+  <h3>PWA 配置</h3>
+  <pre><span class="comment">// public/manifest.json</span>
+{
+  <span class="key">"name"</span>: <span class="str">"飞鱼加速器"</span>,
+  <span class="key">"short_name"</span>: <span class="str">"飞鱼加速"</span>,
+  <span class="key">"theme_color"</span>: <span class="str">"#00c8ff"</span>,
+  <span class="key">"background_color"</span>: <span class="str">"#060d1a"</span>,
+  <span class="key">"display"</span>: <span class="str">"standalone"</span>
+}</pre>
+
+  <!-- 构建 & 部署 -->
+  <h2 id="deploy">构建 &amp; 部署</h2>
+  <h3>多页面 Vite 配置</h3>
+  <pre><span class="comment">// vite.config.ts</span>
+<span class="key">build</span>: {
+  rollupOptions: {
+    input: {
+      <span class="key">main</span>: path.resolve(__dirname, <span class="str">'index.html'</span>),   <span class="comment">// 桌面首页</span>
+      <span class="key">app</span>:  path.resolve(__dirname, <span class="str">'app.html'</span>),    <span class="comment">// React 应用</span>
+    }
+  }
+},
+<span class="key">base</span>: <span class="str">'./'</span>,   <span class="comment">// 相对路径，适配 WebView 本地加载</span></pre>
+
+  <h3>安卓 WebView 集成方式</h3>
+  <ol>
+    <li>将 <code>dist/</code> 目录完整复制到 Android 项目 <code>app/src/main/assets/</code></li>
+    <li>WebView 加载：<code>file:///android_asset/index.html</code>（桌面入口）或 <code>file:///android_asset/app.html</code>（直接进应用）</li>
+    <li>WebView 需启用：<code>setJavaScriptEnabled(true)</code>、<code>setDomStorageEnabled(true)</code>（localStorage 支持）</li>
+    <li>所有资源为相对路径，无跨域问题</li>
+  </ol>
+
+  <div class="tip green">
+    构建输出约 400KB（JS gzip 87KB + CSS gzip 8KB），适合内嵌 WebView，无需网络请求静态资源。
+  </div>
+
+  <h3>dist 目录结构</h3>
+  <pre><span class="key">dist/</span>
+├── <span class="str">index.html</span>                  <span class="comment"># 桌面首页</span>
+├── <span class="str">app.html</span>                    <span class="comment"># React 应用入口</span>
+├── assets/
+│   ├── app-[hash].js           <span class="comment"># 主包 ~321KB（gzip 88KB）</span>
+│   └── app-[hash].css          <span class="comment"># 样式包 ~47KB（gzip 8KB）</span>
+├── images/
+│   ├── fy-logo001.png          <span class="comment"># 应用内 LOGO</span>
+│   └── fy-logo002.png          <span class="comment"># 桌面 LOGO</span>
+├── desktop.html
+└── manifest.json</pre>
+
+  <div class="footer">
+    飞鱼加速器 · UI 开发交付文档 · v2.0 · 2026<br>
+    仅供内部开发使用，请勿对外传播
+  </div>
+
+</main>
+</div>
+
+<script>
+// Active sidebar highlight on scroll
+const sections = document.querySelectorAll('h2[id]');
+const links = document.querySelectorAll('.sidebar nav a');
+function setActive() {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY + 120 >= s.offsetTop) current = s.id; });
+  links.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', setActive, { passive: true });
+setActive();
+</script>
+</body>
+</html>
