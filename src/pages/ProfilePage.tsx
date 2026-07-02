@@ -5,6 +5,7 @@ import {
   Settings,
   HelpCircle,
   MessageCircle,
+  Handshake,
   User,
   LogIn,
 } from "lucide-react"
@@ -19,9 +20,10 @@ interface ProfilePageProps {
   onOpenSettings: () => void
   onOpenShare: () => void
   onOpenHelp: () => void
+  onOpenBusinessCoop: () => void
 }
 
-export function ProfilePage({ isLoggedIn, onLogin, onOpenSettings, onOpenShare, onOpenHelp }: ProfilePageProps) {
+export function ProfilePage({ isLoggedIn, onLogin, onOpenSettings, onOpenShare, onOpenHelp, onOpenBusinessCoop }: ProfilePageProps) {
   const menuItems = [
     {
       icon: Share2,
@@ -44,6 +46,15 @@ export function ProfilePage({ isLoggedIn, onLogin, onOpenSettings, onOpenShare, 
       color: "text-secondary-foreground",
       bg: "bg-secondary",
       action: () => {},
+    },
+    {
+      icon: Handshake,
+      label: "商务合作",
+      color: "text-[#ff6b35]",
+      bg: "bg-[#ff6b35]/10",
+      badge: "广告主",
+      badgeColor: "text-[#ff6b35] bg-[#ff6b35]/10",
+      action: onOpenBusinessCoop,
     },
     {
       icon: Settings,
@@ -76,7 +87,7 @@ export function ProfilePage({ isLoggedIn, onLogin, onOpenSettings, onOpenShare, 
               <>
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl overflow-hidden">
-                    <img src="/images/logo_icon.png" alt="logo" className="w-full h-full object-cover" />
+                    <img src="./images/fy-logo001.png" alt="logo" className="w-full h-full object-cover" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm text-muted-foreground">186****8888</p>
@@ -123,7 +134,7 @@ export function ProfilePage({ isLoggedIn, onLogin, onOpenSettings, onOpenShare, 
                     </div>
                     <span className="flex-1 text-left text-sm text-foreground">{item.label}</span>
                     {item.badge && (
-                      <span className="text-[10px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded-md">
+                      <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${'badgeColor' in item && item.badgeColor ? item.badgeColor : 'text-primary bg-primary/10'}`}>
                         {item.badge}
                       </span>
                     )}

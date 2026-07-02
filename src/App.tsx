@@ -20,9 +20,10 @@ import { PointsHistoryPage, type PointsRecord } from "@/pages/PointsHistoryPage"
 import { OtherPlatformsPage } from "@/pages/OtherPlatformsPage"
 import { AboutPage } from "@/pages/AboutPage"
 import { HelpCenterPage } from "@/pages/HelpCenterPage"
+import { BusinessCoopPage } from "@/pages/BusinessCoopPage"
 import { AddToHomeScreenPrompt } from "@/components/AddToHomeScreenPrompt"
 
-type AppStage = "splash" | "privacy" | "main" | "login" | "app-select" | "agreement" | "settings" | "account-delete" | "mode-select" | "line-select" | "share" | "other-benefits" | "task-submit" | "points-exchange" | "points-history" | "other-platforms" | "about" | "help-center"
+type AppStage = "splash" | "privacy" | "main" | "login" | "app-select" | "agreement" | "settings" | "account-delete" | "mode-select" | "line-select" | "share" | "other-benefits" | "task-submit" | "points-exchange" | "points-history" | "other-platforms" | "about" | "help-center" | "business-coop"
 
 export default function App() {
   const hasAgreed = false // DEV: always show privacy modal
@@ -232,7 +233,7 @@ export default function App() {
                 {/* logo + title */}
                 <div className="flex flex-col items-center gap-3 mb-5">
                   <div className="w-14 h-14 rounded-2xl overflow-hidden">
-                    <img src="/images/logo_icon.png" alt="logo" className="w-full h-full object-cover" />
+                    <img src="./images/fy-logo001.png" alt="logo" className="w-full h-full object-cover" />
                   </div>
                   <div className="text-center">
                     <h2 className="text-base font-bold text-foreground">隐私政策与用户协议</h2>
@@ -399,6 +400,13 @@ export default function App() {
           />
         )
 
+      case "business-coop":
+        return (
+          <BusinessCoopPage
+            onBack={() => setStage("main")}
+          />
+        )
+
       case "main":
         return (
           <div className="w-full h-full relative">
@@ -440,6 +448,7 @@ export default function App() {
                   onOpenSettings={handleOpenSettings}
                   onOpenShare={handleOpenShare}
                   onOpenHelp={() => setStage("help-center")}
+                  onOpenBusinessCoop={() => setStage("business-coop")}
                 />
               )}
             </div>

@@ -61,7 +61,7 @@ export function AboutPage({ onBack }: AboutPageProps) {
         <div className="flex flex-col items-center mb-8">
           <div className="w-18 h-18 rounded-2xl overflow-hidden glow-primary mb-3">
             <img
-              src="/images/logo_icon.png"
+              src="./images/fy-logo001.png"
               alt="飞鱼加速器"
               className="w-[72px] h-[72px] object-cover"
             />
