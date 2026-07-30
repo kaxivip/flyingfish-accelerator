@@ -1,6 +1,7 @@
+import { useState } from "react"
 import { AccelerateButton } from "@/components/AccelerateButton"
 import { Card, CardContent } from "@/components/ui/card"
-import { Globe, Smartphone, ChevronRight, Share2, Signal, Zap, Pause } from "lucide-react"
+import { Globe, Smartphone, ChevronRight, Share2, Signal, Zap, Pause, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { type LineId, LINE_OPTIONS } from "@/pages/LineSelectPage"
 
@@ -12,9 +13,10 @@ interface HomePageProps {
   currentMode: "global" | "app"
   currentLine: LineId
   selectedApps: string[]
-  connectedSeconds: number
+  remainingSeconds: number
   formatTimer: (secs: number) => string
   onToggleConnect: () => void
+  onRefreshRemaining: () => void
   onNavigate: (page: HomePageAction) => void
   onOpenModeSelect: () => void
   onOpenLineSelect: () => void
@@ -27,13 +29,21 @@ export function HomePage({
   currentMode,
   currentLine,
   selectedApps,
-  connectedSeconds,
+  remainingSeconds,
   formatTimer,
   onToggleConnect,
+  onRefreshRemaining,
   onOpenModeSelect,
   onOpenLineSelect,
   onOpenShare,
 }: HomePageProps) {
+  const [showRefreshToast, setShowRefreshToast] = useState(false)
+
+  const handleRefresh = () => {
+    onRefreshRemaining()
+    setShowRefreshToast(true)
+    setTimeout(() => setShowRefreshToast(false), 3000)
+  }
 
   return (
     <div className="w-full h-full bg-ocean-gradient flex flex-col relative overflow-hidden">
@@ -65,13 +75,16 @@ export function HomePage({
       <div className="relative z-10 flex-1 flex flex-col px-5">
         {/* Status badge - top */}
         <div className="flex justify-center mt-4 mb-2">
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${
-            isConnected
-              ? "bg-status-connected/10 border border-status-connected/20"
-              : isConnecting
-              ? "bg-primary/10 border border-primary/20"
-              : "bg-primary/8 border border-primary/15"
-          }`}>
+          <div
+            onClick={isConnected ? handleRefresh : undefined}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full ${
+              isConnected
+                ? "bg-status-connected/10 border border-status-connected/20 cursor-pointer active:scale-[0.97] transition-transform"
+                : isConnecting
+                ? "bg-primary/10 border border-primary/20"
+                : "bg-primary/8 border border-primary/15"
+            }`}
+          >
             <div className={`w-2 h-2 rounded-full ${
               isConnected
                 ? "bg-status-connected animate-pulse"
@@ -87,12 +100,15 @@ export function HomePage({
                 : "text-primary"
             }`}>
               {isConnected
-                ? `加速中 ${formatTimer(connectedSeconds)}`
+                ? `加速中 ${formatTimer(remainingSeconds)}`
                 : isConnecting
                 ? "连接中..."
                 : "准备就绪"
               }
             </span>
+            {isConnected && (
+              <RefreshCw className="w-3 h-3 text-status-connected/70" />
+            )}
           </div>
         </div>
 
@@ -181,6 +197,16 @@ export function HomePage({
           </div>
         </Card>
       </div>
+
+      {/* Refresh toast */}
+      {showRefreshToast && (
+        <div className="absolute inset-x-0 top-16 z-50 flex justify-center pointer-events-none">
+          <div className="px-4 py-2.5 rounded-xl bg-black/80 text-white text-xs shadow-xl animate-fade-in max-w-[280px] text-center leading-relaxed">
+            加速计时已更新 ^_^<br />
+            <span className="text-white/70">看广告兑加速时长，刷新可延长加速时间</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

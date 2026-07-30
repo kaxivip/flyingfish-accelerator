@@ -7,7 +7,6 @@ import {
   Upload,
   Gift,
   Star,
-  HandCoins,
 } from "lucide-react"
 
 type TaskStatus = "pending" | "submitted" | "approved" | "rejected" | "claimed"
@@ -32,13 +31,13 @@ interface BenefitTask {
 interface OtherBenefitsPageProps {
   onBack: () => void
   onSubmitTask: (taskId: number) => void
-  onClaimReward: (taskId: number, reward: number) => void
+  onClaimReward?: (taskId: number, reward: number) => void
 }
 
-export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: OtherBenefitsPageProps) {
+export function OtherBenefitsPage({ onBack, onSubmitTask }: OtherBenefitsPageProps) {
   const [activeTab, setActiveTab] = useState<"todo" | "done">("todo")
 
-  const [tasks, setTasks] = useState<BenefitTask[]>([
+  const [tasks] = useState<BenefitTask[]>([
     {
       id: 1,
       name: "vivo应用商店好评",

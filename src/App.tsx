@@ -35,12 +35,12 @@ export default function App() {
   const [currentMode, setCurrentMode] = useState<"global" | "app">("global")
   const [currentLine, setCurrentLine] = useState<LineId>("smart")
   const [selectedApps, setSelectedApps] = useState<string[]>(["youtube", "telegram", "chatgpt"])
-  const [memberMinutes, setMemberMinutes] = useState(45)
+  const [memberMinutes, setMemberMinutes] = useState(0) // DEV: 0=非会员, >0=会员
   const [points, setPoints] = useState(120)
   const [agreementType, setAgreementType] = useState<"privacy" | "service">("privacy")
   const [agreementReturnTo, setAgreementReturnTo] = useState<AppStage>("main")
   const [submitTaskId, setSubmitTaskId] = useState(0)
-  const [connectedSeconds, setConnectedSeconds] = useState(0)
+  const [remainingSeconds, setRemainingSeconds] = useState(0)
   const [hasClaimedInviteReward, setHasClaimedInviteReward] = useState(false)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -91,16 +91,24 @@ export default function App() {
     }, ...prev])
   }, [])
 
-  // Timer for connected duration
+  // Timer: countdown based on memberMinutes
   useEffect(() => {
     if (isConnected) {
-      setConnectedSeconds(0)
+      setRemainingSeconds(memberMinutes * 60)
       timerRef.current = setInterval(() => {
-        setConnectedSeconds((s) => s + 1)
+        setRemainingSeconds((s) => {
+          if (s <= 1) {
+            // Time's up - auto disconnect
+            if (timerRef.current) clearInterval(timerRef.current)
+            setIsConnected(false)
+            return 0
+          }
+          return s - 1
+        })
       }, 1000)
     } else {
       if (timerRef.current) clearInterval(timerRef.current)
-      setConnectedSeconds(0)
+      setRemainingSeconds(0)
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
@@ -113,6 +121,11 @@ export default function App() {
     const s = String(secs % 60).padStart(2, "0")
     return `${h}:${m}:${s}`
   }
+
+  const handleRefreshRemaining = useCallback(() => {
+    // Re-sync remaining time from current memberMinutes
+    setRemainingSeconds(memberMinutes * 60)
+  }, [memberMinutes])
 
   const handleLogin = useCallback((inviteCode?: string) => {
     setIsLoggedIn(true)
@@ -160,6 +173,11 @@ export default function App() {
     setMemberMinutes((prev) => prev + minutes)
     addPointsRecord(`兑换${minutes >= 60 ? `${Math.floor(minutes / 60)}小时` : `${minutes}分钟`}会员`, costPoints, "spend")
   }, [addPointsRecord])
+
+  // DEV: toggle member status for preview
+  const handleToggleMember = useCallback(() => {
+    setMemberMinutes((prev) => (prev > 0 ? 0 : 45))
+  }, [])
 
   const handleShowAgreement = useCallback((type: "privacy" | "service", returnTo: AppStage = "main") => {
     setAgreementType(type)
@@ -418,9 +436,10 @@ export default function App() {
                   currentMode={currentMode}
                   currentLine={currentLine}
                   selectedApps={selectedApps}
-                  connectedSeconds={connectedSeconds}
+                  remainingSeconds={remainingSeconds}
                   formatTimer={formatTimer}
                   onToggleConnect={handleToggleConnect}
+                  onRefreshRemaining={handleRefreshRemaining}
                   onNavigate={setCurrentPage}
                   onOpenModeSelect={handleOpenModeSelect}
                   onOpenLineSelect={handleOpenLineSelect}
@@ -431,6 +450,7 @@ export default function App() {
                 <TaskCenterPage
                   points={points}
                   memberMinutes={memberMinutes}
+                  onToggleMember={handleToggleMember}
                   onEarnPoints={handleEarnPoints}
                   onOpenShare={handleOpenShare}
                   onOpenOtherBenefits={handleOpenOtherBenefits}

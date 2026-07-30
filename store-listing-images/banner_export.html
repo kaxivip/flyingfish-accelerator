@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banner Export</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 1080px;
+    height: 140px;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', sans-serif;
+  }
+
+  .banner {
+    width: 1080px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background: linear-gradient(135deg, hsl(220, 35%, 5%) 0%, hsl(210, 60%, 12%) 40%, hsl(195, 80%, 10%) 100%);
+    border: 1px solid hsla(190, 100%, 50%, 0.18);
+    box-shadow: 0 0 40px hsla(190, 100%, 50%, 0.10), inset 0 1px 0 hsla(190, 100%, 60%, 0.08);
+  }
+
+  /* Top shimmer line */
+  .shimmer-line {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsla(190, 100%, 55%, 0.7), transparent);
+  }
+
+  /* Bottom shimmer line */
+  .shimmer-line-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsla(190, 100%, 55%, 0.25), transparent);
+  }
+
+  /* Glow orbs */
+  .glow-left {
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, hsla(190, 100%, 50%, 0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .glow-right {
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, hsla(45, 100%, 55%, 0.14), transparent 70%);
+    pointer-events: none;
+  }
+  .glow-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px; height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, hsla(190, 100%, 50%, 0.06), transparent 70%);
+    pointer-events: none;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 52px;
+    gap: 24px;
+  }
+
+  /* Left section */
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+  }
+
+  .icon-box {
+    width: 72px; height: 72px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, hsla(190, 100%, 50%, 0.25), hsla(170, 80%, 40%, 0.15));
+    border: 1px solid hsla(190, 100%, 50%, 0.22);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    box-shadow: 0 0 20px hsla(190, 100%, 50%, 0.15);
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: hsl(190, 100%, 65%);
+    background: hsla(190, 100%, 50%, 0.12);
+    border: 1px solid hsla(190, 100%, 50%, 0.22);
+    white-space: nowrap;
+  }
+
+  /* Center section */
+  .center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .main-text {
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    white-space: nowrap;
+    color: #7EEEFF;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .dot {
+    font-size: 30px;
+    color: hsla(200, 20%, 60%, 0.5);
+    flex-shrink: 0;
+    -webkit-text-fill-color: hsla(200, 20%, 60%, 0.5);
+  }
+
+  /* Right section */
+  .cta-btn {
+    flex-shrink: 0;
+    padding: 18px 40px;
+    border-radius: 50px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 4px;
+    white-space: nowrap;
+    background: linear-gradient(135deg, hsl(190, 100%, 50%), hsl(170, 80%, 45%));
+    color: hsl(220, 35%, 5%);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 24px hsla(190, 100%, 50%, 0.35);
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="shimmer-line"></div>
+  <div class="shimmer-line-bottom"></div>
+  <div class="glow-left"></div>
+  <div class="glow-right"></div>
+  <div class="glow-center"></div>
+
+  <div class="inner">
+    <!-- Left -->
+    <div class="left">
+      <div class="icon-box">🚀</div>
+      <span class="tag">装机必备</span>
+    </div>
+
+    <!-- Center -->
+    <div class="center">
+      <span class="main-text">真免费</span>
+      <span class="dot">·</span>
+      <span class="main-text">真加速</span>
+    </div>
+
+    <!-- Right -->
+    <button class="cta-btn">立即体验</button>
+  </div>
+</div>
+</body>
+</html>
