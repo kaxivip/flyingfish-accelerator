@@ -36,7 +36,7 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
         "好评过程录屏（从打开应用商店到提交评价）",
         "「我的」页面截图（需包含UID或手机号）",
       ],
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
     },
     2: {
       name: "OPPO应用商店好评",
@@ -45,7 +45,7 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
         "好评过程录屏（从打开应用商店到提交评价）",
         "「我的」页面截图（需包含UID或手机号）",
       ],
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
     },
     3: {
       name: "华为应用市场好评",
@@ -54,7 +54,7 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
         "好评过程录屏（从打开应用商店到提交评价）",
         "「我的」页面截图（需包含UID或手机号）",
       ],
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
     },
     4: {
       name: "小米应用商店好评",
@@ -63,7 +63,7 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
         "好评过程录屏（从打开应用商店到提交评价）",
         "「我的」页面截图（需包含UID或手机号）",
       ],
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
     },
   }
 
@@ -99,7 +99,7 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
           <button onClick={onBack} className="text-muted-foreground hover:text-foreground transition-colors">
             <ChevronLeft className="w-6 h-6" />
           </button>
-          <h2 className="text-lg font-bold text-foreground">提交审核</h2>
+          <h2 className="text-lg font-bold text-foreground">ID{taskId}-任务提审</h2>
         </div>
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-5">
           <div className="w-20 h-20 rounded-full bg-status-connected/10 flex items-center justify-center mb-5">
@@ -133,7 +133,7 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
         <button onClick={onBack} className="text-muted-foreground hover:text-foreground transition-colors">
           <ChevronLeft className="w-6 h-6" />
         </button>
-        <h2 className="text-lg font-bold text-foreground">提交审核</h2>
+        <h2 className="text-lg font-bold text-foreground">ID{taskId}-任务提审</h2>
       </div>
 
       {/* Content */}
@@ -141,25 +141,27 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
         {/* Task info card */}
         <Card className="overflow-hidden border-0 relative mb-5">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5" />
-          <CardContent className="p-4 relative z-10">
+          <CardContent className="p-5 relative z-10">
             <p className="text-sm font-semibold text-foreground">{task.name}</p>
-            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{task.description}</p>
-            <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-status-warning/10">
-              <span className="text-[10px] font-medium text-status-warning">奖励：{task.rewardLabel}</span>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">{task.description}</p>
+            <div className="mt-3 mb-3 border-t border-white/10" />
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">奖励</span>
+              <span className="text-2xl font-extrabold text-status-warning leading-none">{task.rewardLabel}</span>
             </div>
           </CardContent>
         </Card>
 
         {/* Requirements - task specific */}
         <Card className="glass-card border-0 mb-5">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2.5">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-2 mb-3">
               <FileText className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-foreground">提交要求</span>
+              <span className="text-sm font-semibold text-foreground">任务要求</span>
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {task.requirements.map((req, i) => (
-                <p key={i} className="text-xs text-muted-foreground">{i + 1}. {req}</p>
+                <p key={i} className="text-xs text-muted-foreground leading-relaxed">{i + 1}. {req}</p>
               ))}
             </div>
           </CardContent>
@@ -167,14 +169,14 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
 
         {/* Upload attachments */}
         <Card className="glass-card border-0 mb-5">
-          <CardContent className="p-4">
+          <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <ImageIcon className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold text-foreground">上传凭证</span>
               <span className="text-[10px] text-muted-foreground/60">最多5个</span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 mb-2">
+            <div className="grid grid-cols-3 gap-2">
               {attachments.map((att, index) => (
                 <div key={index} className="relative aspect-square rounded-xl bg-ocean-mid/50 border border-border/30 flex flex-col items-center justify-center">
                   <ImageIcon className="w-6 h-6 text-muted-foreground/40 mb-1" />
@@ -202,21 +204,24 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
         </Card>
 
         {/* Text description */}
-        <Card className="glass-card border-0 mb-5">
-          <CardContent className="p-4">
+        <Card className="glass-card border-0 mb-6">
+          <CardContent className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <FileText className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-foreground">完成说明</span>
+              <span className="text-sm font-semibold text-foreground">任务完成补充</span>
               <span className="text-[10px] text-muted-foreground/60">选填</span>
             </div>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="请描述任务完成情况，如遇到问题请说明..."
-              className="w-full h-24 bg-ocean-deep/30 rounded-xl px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 border border-border/30 focus:outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 transition-all resize-none"
+              className="w-full h-24 bg-ocean-deep/30 rounded-xl px-3.5 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 border border-border/30 focus:outline-none focus:border-primary/40 focus:ring-1 focus:ring-primary/20 transition-all resize-none"
             />
           </CardContent>
         </Card>
+
+        {/* Divider before submit */}
+        <div className="border-t border-white/10 mb-5" />
 
         {/* Submit button */}
         <button
@@ -228,7 +233,7 @@ export function TaskSubmitPage({ taskId, taskInfo, onBack, onSubmitSuccess }: Ta
               : "bg-muted text-muted-foreground cursor-not-allowed"
           }`}
         >
-          {attachments.length > 0 ? "提交审核" : "上传凭证"}
+          {attachments.length > 0 ? "ID" + taskId + "-任务提审" : "上传凭证"}
         </button>
 
         <p className="text-[10px] text-muted-foreground/50 text-center mt-3">

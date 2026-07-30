@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import {
   PlayCircle,
   UserPlus,
-  // MoreHorizontal,
+  Crown,
   Coins,
   Gift,
   ChevronRight,
@@ -14,11 +14,14 @@ import {
   History,
   Play,
   Trophy,
+  MessageCircle,
+  Copy,
 } from "lucide-react"
 
 interface TaskCenterPageProps {
   points: number
   memberMinutes: number
+  onToggleMember?: () => void
   onEarnPoints: (pts: number, title?: string) => void
   onOpenShare: () => void
   onOpenOtherBenefits: () => void
@@ -39,9 +42,11 @@ interface TaskItem {
   isLink?: boolean
 }
 
-export function TaskCenterPage({ points, memberMinutes, onEarnPoints, onOpenShare, onOpenOtherBenefits, onOpenPointsExchange, onOpenPointsHistory }: TaskCenterPageProps) {
+export function TaskCenterPage({ points, memberMinutes, onToggleMember, onEarnPoints, onOpenShare, onOpenOtherBenefits, onOpenPointsExchange, onOpenPointsHistory }: TaskCenterPageProps) {
   const [adWatchedCount, setAdWatchedCount] = useState(0)
   const [isWatchingAd, setIsWatchingAd] = useState(false)
+  const [showCopyToast, setShowCopyToast] = useState(false)
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false)
 
   const AD_MAX = 8
   const AD_REWARD = 50
@@ -59,10 +64,25 @@ export function TaskCenterPage({ points, memberMinutes, onEarnPoints, onOpenShar
     }, 1500)
   }
 
-  // 计算会员到期时间
-  const expireDate = new Date(Date.now() + memberMinutes * 60 * 1000)
-  const expireTime = `${String(expireDate.getHours()).padStart(2, "0")}:${String(expireDate.getMinutes()).padStart(2, "0")}`
-  const expireDateStr = `${String(expireDate.getMonth() + 1).padStart(2, "0")}/${String(expireDate.getDate()).padStart(2, "0")}`
+  const handleCopyQQGroup = () => {
+    navigator.clipboard.writeText("593635448").then(() => {
+      setShowCopyToast(true)
+      setTimeout(() => setShowCopyToast(false), 2500)
+    }).catch(() => {
+      // fallback
+      const ta = document.createElement("textarea")
+      ta.value = "593635448"
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand("copy")
+      document.body.removeChild(ta)
+      setShowCopyToast(true)
+      setTimeout(() => setShowCopyToast(false), 2500)
+    })
+  }
+
+  // 会员状态
+  const isMember = memberMinutes > 0
 
   // const [isCheckedIn, setIsCheckedIn] = useState(false)
   // const [consecutiveDays, setConsecutiveDays] = useState(3)
@@ -77,10 +97,21 @@ export function TaskCenterPage({ points, memberMinutes, onEarnPoints, onOpenShar
 
   const [tasks, setTasks] = useState<TaskItem[]>([
     {
+      id: "other",
+      title: "高积分 限量福利",
+      description: "积分大于400时，可激活",
+      reward: 1000,
+      icon: Crown,
+      iconColor: "text-status-warning",
+      iconBg: "bg-status-warning/10",
+      completed: false,
+      action: "去看看",
+    },
+    {
       id: "invite",
       title: "分享好友得积分",
       description: "邀好友1:1得积分",
-      reward: 60,
+      reward: 100,
       icon: UserPlus,
       iconColor: "text-accent",
       iconBg: "bg-accent/10",
@@ -88,17 +119,6 @@ export function TaskCenterPage({ points, memberMinutes, onEarnPoints, onOpenShar
       action: "邀请",
       isLink: true,
     },
-    // {
-    //   id: "other",
-    //   title: "其他福利",
-    //   description: "高价值福利，完成即送积分",
-    //   reward: 1440,
-    //   icon: MoreHorizontal,
-    //   iconColor: "text-status-warning",
-    //   iconBg: "bg-status-warning/10",
-    //   completed: false,
-    //   action: "去看看",
-    // },
   ])
 
   const handleTask = (taskId: string) => {
@@ -111,7 +131,7 @@ export function TaskCenterPage({ points, memberMinutes, onEarnPoints, onOpenShar
     }
 
     if (task.id === "other") {
-      onOpenOtherBenefits()
+      setShowConfirmDialog(true)
       return
     }
 
@@ -160,18 +180,21 @@ export function TaskCenterPage({ points, memberMinutes, onEarnPoints, onOpenShar
               </div>
 
               {/* Right: Member */}
-              <div className="pl-4 flex flex-col justify-between min-h-[88px]">
+              <div className="pl-4 flex flex-col justify-between min-h-[88px] cursor-pointer" onClick={onToggleMember}>
                 <div className="flex items-center gap-1.5 h-6">
                   <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
                     <Zap className="w-3.5 h-3.5 text-primary" />
                   </div>
                   <span className="text-xs text-muted-foreground">加速会员</span>
                 </div>
-                <div className="flex items-end h-8">
-                  <span className="text-2xl font-bold text-foreground leading-none">{expireTime}<sub className="ml-0.5 text-[9px] font-normal text-muted-foreground">{expireDateStr}</sub></span>
+                <div className="relative flex items-end h-8">
+                  <span className="text-2xl font-bold text-foreground leading-none">{memberMinutes}<span className="ml-0.5 text-xs font-normal text-muted-foreground">分钟{isMember ? "后" : ""}</span></span>
+                  <span className="absolute bottom-0 right-0 text-[9px] font-medium text-red-400">
+                    {isMember ? "到期" : "请兑会员"}
+                  </span>
                 </div>
                 <button
-                  onClick={onOpenPointsExchange}
+                  onClick={(e) => { e.stopPropagation(); onOpenPointsExchange(); }}
                   className="self-start flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 transition-colors h-4"
                 >
                   <Gift className="w-3 h-3" />
@@ -364,28 +387,40 @@ export function TaskCenterPage({ points, memberMinutes, onEarnPoints, onOpenShar
       <div className="relative z-10 flex-1 overflow-auto px-5 pt-5 pb-28 space-y-4">
         {tasks.map((task) => {
           const Icon = task.icon
+          const isOther = task.id === "other"
           return (
             <Card
               key={task.id}
-              className={`glass-card border-0 transition-all duration-200 ${
-                task.completed ? "opacity-60" : "hover:bg-muted/30 cursor-pointer"
+              className={`border-0 transition-all duration-200 overflow-hidden relative ${
+                task.completed ? "opacity-60" : "cursor-pointer active:scale-[0.98]"
               }`}
               onClick={() => !task.completed && handleTask(task.id)}
             >
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className={`w-11 h-11 rounded-xl ${task.iconBg} flex items-center justify-center`}>
-                  <Icon className={`w-5 h-5 ${task.iconColor}`} />
+              {isOther ? (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500/75 via-purple-400/65 to-fuchsia-500/75" />
+                  <div className="absolute inset-0 border border-violet-400/80 rounded-xl" />
+                </>
+              ) : (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-r from-pink-500/50 via-orange-400/40 to-amber-400/50" />
+                  <div className="absolute inset-0 border border-pink-400/50 rounded-xl" />
+                </>
+              )}
+              <CardContent className="p-4 flex items-center gap-3 relative z-10">
+                <div className={`w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center`}>
+                  <Icon className={`w-5 h-5 ${isOther ? "text-violet-300" : "text-pink-400"}`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground">{task.title}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate">{task.description}</p>
+                  <p className="text-xs text-foreground/60 mt-0.5 truncate">{task.description}</p>
                 </div>
                 <div className="flex items-center gap-2.5 flex-shrink-0">
-                  <span className="text-xs font-semibold text-status-warning ml-1">+{task.reward}积分</span>
+                  <span className={`text-xs font-bold ml-1 ${isOther ? "text-fuchsia-300" : "text-amber-400"}`}>+{task.reward}积分</span>
                   {task.completed ? (
                     <CheckCircle2 className="w-5 h-5 text-status-connected" />
                   ) : (
-                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    <ChevronRight className="w-4 h-4 text-foreground/50" />
                   )}
                 </div>
               </CardContent>
@@ -393,7 +428,64 @@ export function TaskCenterPage({ points, memberMinutes, onEarnPoints, onOpenShar
           )
         })}
 
+        {/* QQ Group */}
+        <div
+          onClick={handleCopyQQGroup}
+          className="flex items-center gap-3 px-4 py-3.5 rounded-xl cursor-pointer active:scale-[0.98] transition-all relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-[#12B7F5]/50 via-cyan-400/40 to-blue-500/50" />
+          <div className="absolute inset-0 border border-[#12B7F5]/55 rounded-xl" />
+          <div className="w-9 h-9 rounded-lg bg-[#12B7F5]/40 flex items-center justify-center flex-shrink-0 relative z-10">
+            <MessageCircle className="w-4.5 h-4.5 text-[#12B7F5]" />
+          </div>
+          <div className="flex-1 min-w-0 relative z-10">
+            <p className="text-xs font-medium text-foreground">免费加速QQ交流群</p>
+            <p className="text-[11px] text-foreground/60 mt-0.5">群号：593635448</p>
+          </div>
+          <div className="flex items-center gap-1.5 text-[11px] text-[#12B7F5] flex-shrink-0 relative z-10 font-medium">
+            <Copy className="w-3.5 h-3.5" />
+            复制群号
+          </div>
+        </div>
+
       </div>
+
+      {/* Copy toast */}
+      {showCopyToast && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="px-5 py-3 rounded-xl bg-black/80 text-white text-sm shadow-xl animate-fade-in">
+            群号已复制，请打开QQ搜索添加交流群
+          </div>
+        </div>
+      )}
+
+      {/* Confirm dialog for 限量福利 */}
+      {showConfirmDialog && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="mx-6 w-full max-w-[300px] rounded-2xl bg-[hsl(210_30%_12%)] border border-white/10 shadow-2xl animate-fade-in">
+            <div className="p-5 text-center">
+              <div className="w-12 h-12 rounded-full bg-violet-500/20 flex items-center justify-center mx-auto mb-3">
+                <Crown className="w-6 h-6 text-violet-400" />
+              </div>
+              <p className="text-sm font-semibold text-foreground mb-1">限量福利</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                看广告，请在积分大于400时激活此任务入口^_^
+              </p>
+            </div>
+            <div className="flex border-t border-white/10">
+              <button
+                onClick={() => {
+                  setShowConfirmDialog(false)
+                  onOpenOtherBenefits()
+                }}
+                className="flex-1 py-3 text-sm font-semibold text-violet-400 hover:bg-violet-500/10 transition-colors"
+              >
+                确认
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

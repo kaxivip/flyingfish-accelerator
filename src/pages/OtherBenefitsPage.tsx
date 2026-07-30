@@ -52,7 +52,7 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
       expiry: "7月31日 23:59",
       reward: 1440,
       status: "pending",
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
     },
     {
       id: 2,
@@ -67,7 +67,7 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
       expiry: "7月31日 23:59",
       reward: 1440,
       status: "pending",
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
     },
     {
       id: 3,
@@ -82,7 +82,7 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
       expiry: "7月31日 23:59",
       reward: 1440,
       status: "pending",
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
     },
     {
       id: 4,
@@ -97,7 +97,7 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
       expiry: "7月31日 23:59",
       reward: 1440,
       status: "pending",
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
     },
     // --- 已完成列表示例数据 ---
     {
@@ -110,24 +110,10 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
       expiry: "6月30日 23:59",
       reward: 1440,
       status: "claimed",
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
       submittedAt: "06/28 14:22",
       reviewedAt: "06/29 10:05",
       claimedAt: "06/29 18:30",
-    },
-    {
-      id: 6,
-      name: "OPPO应用商店好评",
-      description: "",
-      requirements: [],
-      quantity: 1,
-      completed: 1,
-      expiry: "7月15日 23:59",
-      reward: 1440,
-      status: "approved",
-      rewardLabel: "1440积分",
-      submittedAt: "07/03 09:15",
-      reviewedAt: "07/04 16:40",
     },
     {
       id: 7,
@@ -139,7 +125,7 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
       expiry: "6月28日 23:59",
       reward: 1440,
       status: "rejected",
-      rewardLabel: "1440积分",
+      rewardLabel: "1000分",
       submittedAt: "06/26 20:10",
       reviewedAt: "06/27 11:30",
       rejectReason: "录屏内容不清晰，无法确认好评操作。请重新录制后提交。",
@@ -157,15 +143,6 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
     claimed: { label: "已领取", color: "text-status-connected", icon: CheckCircle2 },
   } */
 
-  const handleClaim = (taskId: number) => {
-    const task = tasks.find((t) => t.id === taskId)
-    if (!task) return
-    onClaimReward(taskId, task.reward)
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, status: "claimed" as TaskStatus, completed: t.quantity } : t))
-    )
-  }
-
   const isDone = activeTab === "done"
 
   return (
@@ -181,7 +158,7 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
         <button onClick={onBack} className="text-muted-foreground hover:text-foreground transition-colors">
           <ChevronLeft className="w-6 h-6" />
         </button>
-        <h2 className="text-lg font-bold text-foreground">其他福利</h2>
+        <h2 className="text-lg font-bold text-foreground">限量福利</h2>
       </div>
 
       {/* Tabs - centered */}
@@ -219,17 +196,17 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
       </div>
 
       {/* Task list */}
-      <div className="relative z-10 flex-1 overflow-auto px-5 pt-4 pb-8 space-y-4">
+      <div className="relative z-10 flex-1 overflow-auto px-5 pt-5 pb-10 space-y-5">
         {activeTab === "todo" && todoTasks.length === 0 && (
-          <div className="flex flex-col items-center pt-12">
-            <CheckCircle2 className="w-10 h-10 text-status-connected/30 mb-3" />
+          <div className="flex flex-col items-center pt-16">
+            <CheckCircle2 className="w-12 h-12 text-status-connected/30 mb-4" />
             <p className="text-sm text-muted-foreground">暂无进行中的任务</p>
           </div>
         )}
 
         {activeTab === "done" && doneTasks.length === 0 && (
-          <div className="flex flex-col items-center pt-12">
-            <Clock className="w-10 h-10 text-muted-foreground/30 mb-3" />
+          <div className="flex flex-col items-center pt-16">
+            <Clock className="w-12 h-12 text-muted-foreground/30 mb-4" />
             <p className="text-sm text-muted-foreground">暂无已完成的任务</p>
           </div>
         )}
@@ -237,14 +214,14 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
         {(isDone ? doneTasks : todoTasks).map((task) => {
           return (
             <Card key={task.id} className="glass-card border-0 overflow-hidden">
-              <CardContent className="p-4.5">
+              <CardContent className="p-5">
                 {/* Task header */}
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Star className="w-3.5 h-3.5 text-primary" />
+                <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/15">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Star className="w-4 h-4 text-primary" />
                     </div>
-                    <p className="text-sm font-medium text-foreground">{task.name}</p>
+                    <p className="text-sm font-medium text-foreground">ID:{task.id}-{task.name}</p>
                   </div>
                 </div>
 
@@ -252,34 +229,25 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
                 {!isDone && (
                   <>
                     {/* Task description */}
-                    <p className="text-xs text-muted-foreground leading-relaxed mb-2.5">
+                    <p className="text-xs text-muted-foreground leading-relaxed mb-3.5">
                       {task.description}
                     </p>
 
                     {/* Requirements (only for pending) */}
                     {task.status === "pending" && task.requirements.length > 0 && (
-                      <div className="mb-2.5 px-2.5 py-2 rounded-lg bg-ocean-deep/20 border border-border/20">
-                        <p className="text-[10px] font-medium text-muted-foreground/70 mb-1">提交要求：</p>
+                      <div className="mb-3.5 px-3 py-2.5 rounded-lg bg-ocean-deep/20 border border-border/20">
+                        <p className="text-[10px] font-medium text-muted-foreground/70 mb-1.5">任务要求：</p>
                         {task.requirements.map((req, i) => (
-                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed">&bull; {req}</p>
+                          <p key={i} className="text-[11px] text-muted-foreground leading-relaxed mb-1 last:mb-0">&bull; {req}</p>
                         ))}
                       </div>
                     )}
-
-                    {/* Task meta */}
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        <span>截止 {task.expiry}</span>
-                      </div>
-                      <span>已完成 {task.completed}/{task.quantity}</span>
-                    </div>
                   </>
                 )}
 
                 {/* === 已完成 Tab: show time info === */}
                 {isDone && (
-                  <div className="space-y-1.5 mb-3">
+                  <div className="space-y-2 mb-4">
                     {task.submittedAt && (
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Clock className="w-3 h-3 flex-shrink-0" />
@@ -292,28 +260,24 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
                         <span>审核时间：{task.reviewedAt}</span>
                       </div>
                     )}
-                    {task.claimedAt && (
-                      <div className="flex items-center gap-2 text-xs text-status-connected">
-                        <Clock className="w-3 h-3 flex-shrink-0" />
-                        <span>领取时间：{task.claimedAt}</span>
-                      </div>
-                    )}
                   </div>
                 )}
 
                 {/* Rejected reason (both tabs) */}
                 {task.status === "rejected" && task.rejectReason && (
-                  <div className="mb-2.5 px-2.5 py-2 rounded-lg bg-destructive/5 border border-destructive/15">
-                    <p className="text-[10px] font-medium text-destructive/70 mb-0.5">未通过原因：</p>
+                  <div className="mb-3.5 px-3 py-2.5 rounded-lg bg-destructive/5 border border-destructive/15">
                     <p className="text-[11px] text-destructive/80 leading-relaxed">{task.rejectReason}</p>
                   </div>
                 )}
 
+                {/* Divider before reward & action */}
+                <div className="border-t border-white/15 mb-3" />
+
                 {/* Reward & action */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
-                    <Gift className="w-3.5 h-3.5 text-status-warning" />
-                    <span className="text-xs font-semibold text-status-warning">
+                    <Gift className={`w-4 h-4 ${task.status === "rejected" ? "text-muted-foreground/50" : "text-status-warning"}`} />
+                    <span className={`text-sm font-bold ${task.status === "rejected" ? "text-muted-foreground/50" : "text-status-warning"}`}>
                       +{task.rewardLabel}
                     </span>
                   </div>
@@ -321,10 +285,10 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
                   {task.status === "pending" && (
                     <button
                       onClick={() => onSubmitTask(task.id)}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-ocean-surface to-accent text-primary-foreground text-xs font-medium hover:opacity-90 transition-opacity active:scale-95"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-ocean-surface to-accent text-primary-foreground text-xs font-medium hover:opacity-90 transition-opacity active:scale-95"
                     >
                       <Upload className="w-3.5 h-3.5" />
-                      提交审核
+                      完成此任务
                     </button>
                   )}
 
@@ -332,20 +296,10 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
                     <span className="text-xs text-primary/70">客服审核中，请耐心等待</span>
                   )}
 
-                  {task.status === "approved" && (
-                    <button
-                      onClick={() => handleClaim(task.id)}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-status-warning to-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition-opacity active:scale-95"
-                    >
-                      <HandCoins className="w-3.5 h-3.5" />
-                      领取{task.rewardLabel}
-                    </button>
-                  )}
-
                   {task.status === "rejected" && (
                     <button
                       onClick={() => onSubmitTask(task.id)}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors active:scale-95"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors active:scale-95"
                     >
                       <Upload className="w-3.5 h-3.5" />
                       重新提交
@@ -355,24 +309,17 @@ export function OtherBenefitsPage({ onBack, onSubmitTask, onClaimReward }: Other
                   {task.status === "claimed" && (
                     <span className="text-xs text-status-connected font-medium flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      积分已领取
+                      已赠送
                     </span>
                   )}
                 </div>
-
-                {/* Approved hint */}
-                {task.status === "approved" && (
-                  <p className="text-[10px] text-status-warning/70 mt-2">
-                    审核已通过，请尽快领取积分。
-                  </p>
-                )}
               </CardContent>
             </Card>
           )
         })}
 
         {/* General tips */}
-        <div className="mt-2 px-1">
+        <div className="mt-3 px-1">
           <p className="text-[10px] text-muted-foreground/50 leading-relaxed text-center">
             提交后客服将在1-3个工作日内审核 &middot; 审核通过后需手动领取积分
           </p>
