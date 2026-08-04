@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   PlayCircle,
@@ -155,7 +155,6 @@ export function TaskCenterPage({ points, memberMinutes, onToggleMember, onEarnPo
       {/* Header */}
       <div className="relative z-10 px-5 pt-2">
         <h2 className="text-xl font-bold text-foreground">免费会员</h2>
-        <p className="text-sm text-muted-foreground mt-1">每天免费用至少8小时</p>
       </div>
 
       {/* Points card - equal level */}
@@ -277,6 +276,9 @@ export function TaskCenterPage({ points, memberMinutes, onToggleMember, onEarnPo
         </Card>
       </div>
       */}
+
+      {/* Banner Carousel */}
+      <BannerCarousel onOpenPointsExchange={onOpenPointsExchange} onOpenShare={onOpenShare} />
 
       {/* Ad watching card - featured */}
       <div className="relative z-10 px-5 pt-4">
@@ -486,6 +488,135 @@ export function TaskCenterPage({ points, memberMinutes, onToggleMember, onEarnPo
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+interface BannerCarouselProps {
+  onOpenPointsExchange: () => void
+  onOpenShare: () => void
+}
+
+function BannerCarousel({ onOpenPointsExchange, onOpenShare }: BannerCarouselProps) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const startXRef = useRef(0)
+  const startYRef = useRef(0)
+  const isDraggingRef = useRef(false)
+  const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const banners = [
+    {
+      id: "member-day",
+      image: "/images/banner-member-day.png",
+      action: onOpenShare,
+      alt: "会员日 每月1/11/21日超值会员兑换",
+    },
+    {
+      id: "share-friends",
+      image: "/images/banner-share-friends.png",
+      action: onOpenPointsExchange,
+      alt: "分享好友 10倍积分赠送",
+    },
+  ]
+
+  const startAutoPlay = () => {
+    stopAutoPlay()
+    autoPlayRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % banners.length)
+    }, 4000)
+  }
+
+  const stopAutoPlay = () => {
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current)
+      autoPlayRef.current = null
+    }
+  }
+
+  useEffect(() => {
+    startAutoPlay()
+    return () => stopAutoPlay()
+  }, [])
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startXRef.current = e.touches[0].clientX
+    startYRef.current = e.touches[0].clientY
+    isDraggingRef.current = true
+    stopAutoPlay()
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) return
+    const diffX = startXRef.current - e.touches[0].clientX
+    if (Math.abs(diffX) > 30) {
+      e.preventDefault()
+    }
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) return
+    isDraggingRef.current = false
+    const diffX = startXRef.current - e.changedTouches[0].clientX
+    const diffY = startYRef.current - e.changedTouches[0].clientY
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX > 0) {
+        setActiveIndex((prev) => (prev + 1) % banners.length)
+      } else {
+        setActiveIndex((prev) => (prev - 1 + banners.length) % banners.length)
+      }
+    }
+    startAutoPlay()
+  }
+
+  return (
+    <div className="relative z-10 px-5 pt-3">
+      <div
+        ref={containerRef}
+        className="relative overflow-hidden rounded-2xl cursor-pointer"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseEnter={stopAutoPlay}
+        onMouseLeave={startAutoPlay}
+      >
+        {/* Slides */}
+        <div
+          className="flex transition-transform duration-500 ease-out"
+          style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+        >
+          {banners.map((banner) => (
+            <div key={banner.id} className="w-full flex-shrink-0" onClick={banner.action}>
+              <img
+                src={banner.image}
+                alt={banner.alt}
+                className="w-full h-auto object-cover active:scale-[0.98] transition-transform duration-200"
+                draggable={false}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Dots */}
+        <div className="absolute bottom-2.5 left-0 right-0 flex justify-center gap-1.5">
+          {banners.map((_, index) => (
+            <button
+              key={index}
+              onClick={(e) => {
+                e.stopPropagation()
+                setActiveIndex(index)
+                stopAutoPlay()
+                startAutoPlay()
+              }}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === activeIndex
+                  ? "bg-white w-4 shadow-[0_0_6px_rgba(255,255,255,0.6)]"
+                  : "bg-white/40"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
