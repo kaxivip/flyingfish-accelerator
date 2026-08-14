@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { ChevronLeft, ArrowUpCircle, ArrowDownCircle } from "lucide-react"
+import { useState, useMemo } from "react"
+import { ChevronLeft, ArrowUpCircle, ArrowDownCircle, ChevronDown, ChevronUp, Coins } from "lucide-react"
 
 export interface PointsRecord {
   id: number
@@ -17,10 +17,24 @@ interface PointsHistoryPageProps {
 
 export function PointsHistoryPage({ records, currentPoints: _currentPoints, onBack }: PointsHistoryPageProps) {
   const [activeTab, setActiveTab] = useState<"earn" | "spend">("earn")
+  const [summaryExpanded, setSummaryExpanded] = useState(false)
 
   const earnRecords = records.filter(r => r.type === "earn").slice(0, 50)
   const spendRecords = records.filter(r => r.type === "spend").slice(0, 50)
   const activeRecords = activeTab === "earn" ? earnRecords : spendRecords
+
+  // Compute earn summary grouped by title
+  const earnSummary = useMemo(() => {
+    const groups = earnRecords.reduce<Record<string, number>>((acc, r) => {
+      acc[r.title] = (acc[r.title] || 0) + r.amount
+      return acc
+    }, {})
+    const items = Object.entries(groups)
+      .map(([title, total]) => ({ title, total }))
+      .sort((a, b) => b.total - a.total)
+    const grandTotal = items.reduce((sum, i) => sum + i.total, 0)
+    return { items, grandTotal }
+  }, [earnRecords])
 
   return (
     <div className="w-full h-full bg-ocean-gradient flex flex-col relative overflow-hidden">
@@ -66,6 +80,54 @@ export function PointsHistoryPage({ records, currentPoints: _currentPoints, onBa
 
       {/* Record list */}
       <div className="relative z-10 flex-1 overflow-auto px-5 pt-3 pb-8 space-y-2">
+
+        {/* Earn summary card */}
+        {activeTab === "earn" && earnSummary.items.length > 0 && (
+          <div className="rounded-2xl overflow-hidden mb-3">
+            {/* Collapsed header - always visible */}
+            <button
+              onClick={() => setSummaryExpanded((v) => !v)}
+              className="w-full flex items-center justify-between px-4 py-3.5 bg-gradient-to-r from-status-connected/10 via-status-connected/5 to-transparent border border-status-connected/15 rounded-2xl transition-all hover:border-status-connected/25"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-status-connected/15 flex items-center justify-center">
+                  <Coins className="w-3.5 h-3.5 text-status-connected" />
+                </div>
+                <div className="text-left">
+                  <p className="text-[10px] text-muted-foreground">截止 2026/08/16</p>
+                  <p className="text-sm font-bold text-foreground">
+                    共获取 <span className="text-status-connected">{earnSummary.grandTotal}</span> 积分
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                {summaryExpanded ? "收起" : "查看明细"}
+                {summaryExpanded ? (
+                  <ChevronUp className="w-3.5 h-3.5" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5" />
+                )}
+              </div>
+            </button>
+
+            {/* Expanded details */}
+            {summaryExpanded && (
+              <div className="mt-2 rounded-xl bg-muted/20 border border-border/20 px-4 py-3 space-y-2.5 animate-fade-in">
+                {earnSummary.items.map((item, index) => (
+                  <div key={item.title} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="w-4 h-4 rounded bg-muted/50 flex items-center justify-center text-[9px] font-bold text-muted-foreground">
+                        {index + 1}
+                      </span>
+                      <span className="text-xs text-foreground/80">{item.title}</span>
+                    </div>
+                    <span className="text-xs font-semibold text-status-connected">+{item.total}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         {activeRecords.length === 0 ? (
           <div className="flex flex-col items-center justify-center pt-20">
             <p className="text-sm text-muted-foreground">

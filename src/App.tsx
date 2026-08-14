@@ -13,6 +13,7 @@ import { AgreementPage } from "@/pages/AgreementPage"
 import { SettingsPage } from "@/pages/SettingsPage"
 import { AccountDeletePage } from "@/pages/AccountDeletePage"
 import { SharePage } from "@/pages/SharePage"
+import { ShareDetailPage } from "@/pages/ShareDetailPage"
 import { OtherBenefitsPage } from "@/pages/OtherBenefitsPage"
 import { TaskSubmitPage } from "@/pages/TaskSubmitPage"
 import { PointsExchangePage } from "@/pages/PointsExchangePage"
@@ -23,7 +24,7 @@ import { HelpCenterPage } from "@/pages/HelpCenterPage"
 import { BusinessCoopPage } from "@/pages/BusinessCoopPage"
 import { AddToHomeScreenPrompt } from "@/components/AddToHomeScreenPrompt"
 
-type AppStage = "splash" | "privacy" | "main" | "login" | "app-select" | "agreement" | "settings" | "account-delete" | "mode-select" | "line-select" | "share" | "other-benefits" | "task-submit" | "points-exchange" | "points-history" | "other-platforms" | "about" | "help-center" | "business-coop"
+type AppStage = "splash" | "privacy" | "main" | "login" | "app-select" | "agreement" | "settings" | "account-delete" | "mode-select" | "line-select" | "share" | "share-detail" | "other-benefits" | "task-submit" | "points-exchange" | "points-history" | "other-platforms" | "about" | "help-center" | "business-coop"
 
 export default function App() {
   const hasAgreed = false // DEV: always show privacy modal
@@ -349,6 +350,14 @@ export default function App() {
         return (
           <SharePage
             onBack={() => setStage("main")}
+            onOpenShareDetail={() => setStage("share-detail")}
+          />
+        )
+
+      case "share-detail":
+        return (
+          <ShareDetailPage
+            onBack={() => setStage("share")}
           />
         )
 
@@ -358,6 +367,8 @@ export default function App() {
             onBack={() => setStage("main")}
             onSubmitTask={handleSubmitTask}
             onClaimReward={(_taskId: number, reward: number) => handleEarnPoints(reward, "福利任务奖励")}
+            shareCount={3}
+            onOpenShare={() => setStage("share")}
           />
         )
 

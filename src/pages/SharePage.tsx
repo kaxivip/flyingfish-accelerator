@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { ChevronLeft, Crown, Sparkles, Copy, Check } from "lucide-react"
+import { ChevronLeft, Crown, Sparkles, Copy, Check, List } from "lucide-react"
 
 interface SharePageProps {
   onBack: () => void
+  onOpenShareDetail: () => void
 }
 
-export function SharePage({ onBack }: SharePageProps) {
+export function SharePage({ onBack, onOpenShareDetail }: SharePageProps) {
   const [copied, setCopied] = useState(false)
   const [codeCopied, setCodeCopied] = useState(false)
 
@@ -35,11 +36,20 @@ export function SharePage({ onBack }: SharePageProps) {
       <div className="h-12" />
 
       {/* Header */}
-      <div className="relative z-10 px-5 pt-2 flex items-center gap-3">
-        <button onClick={onBack} className="text-muted-foreground hover:text-foreground transition-colors">
-          <ChevronLeft className="w-6 h-6" />
+      <div className="relative z-10 px-5 pt-2 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={onBack} className="text-muted-foreground hover:text-foreground transition-colors">
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <h2 className="text-lg font-bold text-foreground">分享好友</h2>
+        </div>
+        <button
+          onClick={onOpenShareDetail}
+          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors"
+        >
+          <List className="w-3.5 h-3.5" />
+          分享明细
         </button>
-        <h2 className="text-lg font-bold text-foreground">分享好友</h2>
       </div>
 
       {/* Content */}

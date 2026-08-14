@@ -157,8 +157,11 @@ export function TaskCenterPage({ points, memberMinutes, onToggleMember, onEarnPo
         <h2 className="text-xl font-bold text-foreground">免费会员</h2>
       </div>
 
+      {/* Banner Carousel */}
+      <BannerCarousel onOpenPointsExchange={onOpenPointsExchange} onOpenShare={onOpenShare} />
+
       {/* Points card - equal level */}
-      <div className="relative z-10 px-5 pt-5">
+      <div className="relative z-10 px-5 pt-4">
         <Card className="overflow-hidden border-0 relative">
           {/* Background gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-status-warning/8 via-ocean-mid to-primary/5" />
@@ -276,9 +279,6 @@ export function TaskCenterPage({ points, memberMinutes, onToggleMember, onEarnPo
         </Card>
       </div>
       */}
-
-      {/* Banner Carousel */}
-      <BannerCarousel onOpenPointsExchange={onOpenPointsExchange} onOpenShare={onOpenShare} />
 
       {/* Ad watching card - featured */}
       <div className="relative z-10 px-5 pt-4">
