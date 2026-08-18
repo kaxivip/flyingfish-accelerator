@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from "react"
 import { PhoneFrame } from "@/components/PhoneFrame"
 import { BottomNav, type PageKey } from "@/components/BottomNav"
 import { SplashPage } from "@/pages/SplashPage"
+import { SplashAdPage } from "@/pages/SplashAdPage"
 import { LoginPage } from "@/pages/LoginPage"
 import { HomePage } from "@/pages/HomePage"
 import { ModeSelectPage } from "@/pages/ModeSelectPage"
@@ -24,7 +25,7 @@ import { HelpCenterPage } from "@/pages/HelpCenterPage"
 import { BusinessCoopPage } from "@/pages/BusinessCoopPage"
 import { AddToHomeScreenPrompt } from "@/components/AddToHomeScreenPrompt"
 
-type AppStage = "splash" | "privacy" | "main" | "login" | "app-select" | "agreement" | "settings" | "account-delete" | "mode-select" | "line-select" | "share" | "share-detail" | "other-benefits" | "task-submit" | "points-exchange" | "points-history" | "other-platforms" | "about" | "help-center" | "business-coop"
+type AppStage = "splash" | "splash-ad" | "privacy" | "main" | "login" | "app-select" | "agreement" | "settings" | "account-delete" | "mode-select" | "line-select" | "share" | "share-detail" | "other-benefits" | "task-submit" | "points-exchange" | "points-history" | "other-platforms" | "about" | "help-center" | "business-coop"
 
 export default function App() {
   const hasAgreed = false // DEV: always show privacy modal
@@ -231,6 +232,13 @@ export default function App() {
       case "splash":
         return (
           <SplashPage
+            onFinish={() => setStage("splash-ad")}
+          />
+        )
+
+      case "splash-ad":
+        return (
+          <SplashAdPage
             onFinish={() => {
               if (hasAgreed) {
                 setStage("main")

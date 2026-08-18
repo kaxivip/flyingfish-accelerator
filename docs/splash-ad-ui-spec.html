@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>开屏广告页 UI 规范</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #334155;
+      --border: #475569;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --accent: #60a5fa;
+      --accent2: #22d3ee;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+    .header .subtitle { color: var(--text-dim); font-size: 13px; }
+    .section { margin-bottom: 44px; }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 18px;
+      padding-left: 12px;
+      border-left: 3px solid var(--accent);
+    }
+    .sub-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 24px 0 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    th, td { padding: 10px 14px; text-align: left; border: 1px solid var(--border); }
+    th {
+      background: var(--surface);
+      color: var(--accent2);
+      font-weight: 600;
+      white-space: nowrap;
+      width: 130px;
+    }
+    td { background: var(--surface2); }
+    code {
+      background: rgba(96,165,250,0.12);
+      color: var(--accent);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+    }
+
+    /* Layout Diagram */
+    .layout-wrap { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+    .layout-diagram {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 240px;
+      flex-shrink: 0;
+    }
+    .layout-box {
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .layout-ad {
+      background: linear-gradient(180deg, #64748b, #475569);
+      color: rgba(255,255,255,0.7);
+      padding: 60px 12px;
+      border: 1px dashed rgba(255,255,255,0.15);
+    }
+    .layout-ad small { font-weight: 400; font-size: 11px; opacity: 0.6; display: block; margin-top: 4px; }
+    .layout-brand {
+      background: linear-gradient(180deg, #0a1628, #0d1f3c);
+      color: var(--accent);
+      padding: 18px 12px;
+      border: 1px solid rgba(96,165,250,0.2);
+    }
+    .layout-desc { flex: 1; min-width: 260px; font-size: 14px; color: var(--text-dim); }
+    .layout-desc p { margin-bottom: 10px; }
+
+    /* Swatches */
+    .swatch-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .swatch { width: 72px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .swatch-color { height: 42px; }
+    .swatch-label { background: var(--surface); padding: 5px 6px; font-size: 10px; color: var(--text-dim); text-align: center; }
+
+    /* Gradient Preview */
+    .gradient-bar {
+      height: 40px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Brand text preview */
+    .brand-preview {
+      background: linear-gradient(180deg, #0a1628, #0d1f3c);
+      border-radius: 10px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-preview .main-text {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 0.3em;
+      background: linear-gradient(135deg, #60a5fa, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-preview .icp-text {
+      font-size: 9px;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* Token block */
+    .token-block {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 18px 20px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 2;
+    }
+    .tk { color: var(--accent2); }
+    .tv { color: #fde047; }
+    .tc { color: #64748b; }
+
+    .note-list { padding-left: 20px; }
+    .note-list li { margin-bottom: 8px; color: var(--text-dim); font-size: 13px; }
+    .note-list li strong { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .layout-wrap { flex-direction: column; }
+      .layout-diagram { width: 100%; }
+      body { padding: 20px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <h1>开屏广告页 UI 规范</h1>
+      <div class="subtitle">SplashAdPage · 飞鱼加速器 · v1.0</div>
+    </div>
+
+    <!-- 1. 页面比例划分 -->
+    <div class="section">
+      <h2 class="section-title">1. 页面比例划分</h2>
+      <div class="layout-wrap">
+        <div class="layout-diagram">
+          <div class="layout-box layout-ad">
+            第三方广告区域
+            <small>内容由广告SDK下发，不做自定义开发</small>
+          </div>
+          <div class="layout-box layout-brand">
+            品牌信息区
+          </div>
+        </div>
+        <div class="layout-desc">
+          <p>整页采用全屏纵向 flex 布局，<code>w-full h-full flex flex-col</code>，<code>overflow-hidden</code>。</p>
+          <table>
+            <tr><th>广告区</th><td><code>flex-[5]</code> — 占页面 <strong>≈ 83.3%</strong>，由第三方广告 SDK 填充</td></tr>
+            <tr><th>品牌区</th><td><code>flex-[1]</code> — 占页面 <strong>≈ 16.7%</strong>，自研开发区域</td></tr>
+            <tr><th>高度比</th><td><strong>5 : 1</strong></td></tr>
+          </table>
+          <p style="margin-top:12px; font-size:13px;">广告区右上角含「跳过」按钮（30 秒倒计时，仅手动跳转，不自动跳过）。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 品牌信息区（自研） -->
+    <div class="section">
+      <h2 class="section-title">2. 品牌信息区（自研部分）</h2>
+
+      <!-- Preview -->
+      <div class="brand-preview">
+        <span class="main-text">真免费 真加速</span>
+        <span class="icp-text">沪ICP备10215341号-35A</span>
+      </div>
+
+      <h3 class="sub-title">2.1 容器背景</h3>
+      <div class="gradient-bar" style="background: linear-gradient(180deg, #0a1628, #0d1f3c); color: var(--accent2); border: 1px solid rgba(255,255,255,0.05);">
+        linear-gradient(180deg, #0a1628 → #0d1f3c)
+      </div>
+      <div class="swatch-row">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0a1628;"></div>
+          <div class="swatch-label">#0a1628</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0d1f3c;"></div>
+          <div class="swatch-label">#0d1f3c</div>
+        </div>
+      </div>
+      <table>
+        <tr><th>顶部分割线</th><td><code>border-t border-white/5</code></td></tr>
+        <tr><th>布局</th><td><code>flex-col items-center justify-center</code></td></tr>
+        <tr><th>行间距</th><td><code>gap-1.5</code> (6px)</td></tr>
+      </table>
+
+      <h3 class="sub-title">2.2 品牌主文字「真免费 真加速」</h3>
+      <table>
+        <tr><th>字号</th><td><code>text-2xl</code> (24px)</td></tr>
+        <tr><th>字重</th><td><code>font-black</code> (900)</td></tr>
+        <tr><th>字间距</th><td><code>tracking-[0.3em]</code></td></tr>
+        <tr><th>文字渐变方向</th><td><code>linear-gradient(135deg)</code></td></tr>
+        <tr><th>渐变色</th>
+          <td>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="display:inline-block; width:18px; height:18px; border-radius:4px; background:#60a5fa;"></span>
+              <code>#60a5fa</code> (blue-400)
+              <span style="margin:0 4px;">→</span>
+              <span style="display:inline-block; width:18px; height:18px; border-radius:4px; background:#22d3ee;"></span>
+              <code>#22d3ee</code> (cyan-400)
+            </div>
+          </td>
+        </tr>
+        <tr><th>CSS 实现</th><td><code>background: linear-gradient(135deg, #60a5fa, #22d3ee)</code><br /><code>-webkit-background-clip: text</code><br /><code>-webkit-text-fill-color: transparent</code></td></tr>
+      </table>
+
+      <h3 class="sub-title">2.3 备案号</h3>
+      <table>
+        <tr><th>内容</th><td>沪ICP备10215341号-35A</td></tr>
+        <tr><th>字号</th><td><code>text-[9px]</code></td></tr>
+        <tr><th>颜色</th><td><code>rgba(255, 255, 255, 0.2)</code></td></tr>
+      </table>
+    </div>
+
+    <!-- 3. Design Tokens -->
+    <div class="section">
+      <h2 class="section-title">3. Design Tokens</h2>
+      <div class="token-block">
+        <span class="tc">/* === 品牌区（自研） === */</span><br />
+        <span class="tk">--brand-bg</span>: <span class="tv">linear-gradient(180deg, #0a1628, #0d1f3c)</span>;<br />
+        <span class="tk">--brand-text-gradient</span>: <span class="tv">linear-gradient(135deg, #60a5fa, #22d3ee)</span>;<br />
+        <span class="tk">--brand-icp-color</span>: <span class="tv">rgba(255, 255, 255, 0.20)</span>;<br />
+        <span class="tk">--brand-border</span>: <span class="tv">rgba(255, 255, 255, 0.05)</span>;<br />
+        <br />
+        <span class="tc">/* === 布局 === */</span><br />
+        <span class="tk">--brand-ratio</span>: <span class="tv">flex-[1] ≈ 16.7%</span>;<br />
+        <span class="tk">--ad-ratio</span>: <span class="tv">flex-[5] ≈ 83.3%</span>;<br />
+        <span class="tk">--countdown</span>: <span class="tv">30s (手动跳过，不自动跳转)</span>;<br />
+      </div>
+    </div>
+
+    <!-- 4. 注意事项 -->
+    <div class="section">
+      <h2 class="section-title">4. 注意事项</h2>
+      <ol class="note-list">
+        <li><strong>不自动跳转</strong>：倒计时到 0 后不触发跳转，用户必须手动点击「跳过」。</li>
+        <li><strong>品牌区不含 Logo</strong>：仅文字「真免费 真加速」+ 备案号，无域名。</li>
+        <li><strong>深色底作用</strong>：适配不同广告配色，提供从广告到主页的视觉过渡。</li>
+        <li><strong>广告区为第三方 SDK</strong>：内容由广告平台下发，不做自定义开发。</li>
+      </ol>
+    </div>
+
+  </div>
+</body>
+</html>

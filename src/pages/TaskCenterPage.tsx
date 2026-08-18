@@ -155,10 +155,8 @@ export function TaskCenterPage({ points, memberMinutes, onToggleMember, onEarnPo
       {/* Header */}
       <div className="relative z-10 px-5 pt-2">
         <h2 className="text-xl font-bold text-foreground">免费会员</h2>
+        <p className="text-[11px] text-muted-foreground/70 mt-0.5">真免费！无惧欺诈受骗</p>
       </div>
-
-      {/* Banner Carousel */}
-      <BannerCarousel onOpenPointsExchange={onOpenPointsExchange} onOpenShare={onOpenShare} />
 
       {/* Points card - equal level */}
       <div className="relative z-10 px-5 pt-4">
@@ -208,6 +206,9 @@ export function TaskCenterPage({ points, memberMinutes, onToggleMember, onEarnPo
           </CardContent>
         </Card>
       </div>
+
+      {/* Banner Carousel */}
+      <BannerCarousel onOpenPointsExchange={onOpenPointsExchange} onOpenShare={onOpenShare} />
 
       {/* Daily check-in card - 隐藏 */}
       {/*
