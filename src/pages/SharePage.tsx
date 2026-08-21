@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { ChevronLeft, Crown, Sparkles, Copy, Check, List } from "lucide-react"
 
@@ -107,6 +107,11 @@ export function SharePage({ onBack, onOpenShareDetail }: SharePageProps) {
           </button>
         </div>
 
+        {/* Banner Carousel */}
+        <div className="mb-4">
+          <BannerCarousel />
+        </div>
+
         {/* Rule highlight */}
         <Card className="overflow-hidden border-0 relative mb-8">
           <div className="absolute inset-0 bg-gradient-to-r from-status-warning/8 via-primary/5 to-accent/8" />
@@ -170,6 +175,120 @@ export function SharePage({ onBack, onOpenShareDetail }: SharePageProps) {
           </div>
         </div>
 
+      </div>
+    </div>
+  )
+}
+
+function BannerCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const startXRef = useRef(0)
+  const startYRef = useRef(0)
+  const isDraggingRef = useRef(false)
+  const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const banners = [
+    {
+      id: "share-activity",
+      image: "/images/banner-share-activity.png",
+      alt: "2000积分限时送 邀请好友活动限时开放",
+    },
+  ]
+
+  const startAutoPlay = () => {
+    stopAutoPlay()
+    autoPlayRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % banners.length)
+    }, 4000)
+  }
+
+  const stopAutoPlay = () => {
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current)
+      autoPlayRef.current = null
+    }
+  }
+
+  useEffect(() => {
+    startAutoPlay()
+    return () => stopAutoPlay()
+  }, [])
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startXRef.current = e.touches[0].clientX
+    startYRef.current = e.touches[0].clientY
+    isDraggingRef.current = true
+    stopAutoPlay()
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) return
+    const diffX = startXRef.current - e.touches[0].clientX
+    if (Math.abs(diffX) > 30) {
+      e.preventDefault()
+    }
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) return
+    isDraggingRef.current = false
+    const diffX = startXRef.current - e.changedTouches[0].clientX
+    const diffY = startYRef.current - e.changedTouches[0].clientY
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+      if (diffX > 0) {
+        setActiveIndex((prev) => (prev + 1) % banners.length)
+      } else {
+        setActiveIndex((prev) => (prev - 1 + banners.length) % banners.length)
+      }
+    }
+    startAutoPlay()
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative overflow-hidden rounded-2xl cursor-pointer"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onMouseEnter={stopAutoPlay}
+      onMouseLeave={startAutoPlay}
+    >
+      <div
+        className="flex transition-transform duration-500 ease-out"
+        style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+      >
+        {banners.map((banner) => (
+          <div key={banner.id} className="w-full flex-shrink-0">
+            <img
+              src={banner.image}
+              alt={banner.alt}
+              className="w-full h-auto object-cover active:scale-[0.98] transition-transform duration-200"
+              draggable={false}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Dots */}
+      <div className="absolute bottom-2.5 left-0 right-0 flex justify-center gap-1.5">
+        {banners.map((_, index) => (
+          <button
+            key={index}
+            onClick={(e) => {
+              e.stopPropagation()
+              setActiveIndex(index)
+              stopAutoPlay()
+              startAutoPlay()
+            }}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              index === activeIndex
+                ? "bg-white w-4 shadow-[0_0_6px_rgba(255,255,255,0.6)]"
+                : "bg-white/40"
+            }`}
+          />
+        ))}
       </div>
     </div>
   )
